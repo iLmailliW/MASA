@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>MASA</title>
+</head>
+<body>
+    <form action="{% url 'user:index' %}" method="post">
+    {% csrf_token %}
+    <legend><h1>{{ question.question_text }}</h1></legend>
+    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+    <label>Please enter your company's name.</label><br>
+    <input type="text" name="name" value="{{data.name}}" required><br>
+
+    <label>Please enter the industry your company falls within.</label><br>
+    <input type="text" name="industry" value="{{data.industry}}" required><br>
+
+    <label>Enter the country your company is located within.</label><br>
+    <input type="text" name="country" value="{{data.country}}" required><br>
+
+    <label>Enter the city your company is located within.</label><br>
+    <input type="text" name="city" value="{{data.city}}" required><br>
+
+    <label>Enter the year your company was founded.</label><br>
+    <input type="number" name="year" value="{{data.year}}" required><br>
+
+    <label>Enter the annual EBITDA of your company's current project.</label><br>
+    <input type="number" name="proj_EBITDA" step="0.01" value="{{data.proj_EBITDA}}" required><br>
+
+    <label>Enter the annual EBITDA of your company.</label><br>
+    <input type="number" name="company_EBITDA" step="0.01" value="{{data.company_EBITDA}}" required><br>
+
+    <label>Enter the enterprise value of your company. (USD)</label><br>
+    <input type="number" name="value" step="0.01" value="{{data.value}}" required><br>
+
+    <label>Enter your company's risk appetite (0-1)</label><br>
+    <input type="number" min="0" max="1" name="risk" step="0.01" value="{{data.risk}}" required><br>
+
+    <input type="submit" value="Submit">
+    </form>
+</body>
+</html>

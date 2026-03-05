@@ -1,4 +1,5 @@
 from django.db import models
+from dataclasses import dataclass
 
 
 class Company(models.Model):
@@ -26,7 +27,7 @@ class Company(models.Model):
     company_ebitda = models.FloatField("annual company EBITDA")
     value = models.FloatField()
     risk = models.FloatField()
-    date = models.DateTimeField("date uploaded")
+    date = models.DateField("date uploaded")
 
     def __str__(self):
         data = {
