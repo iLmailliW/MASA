@@ -5,7 +5,7 @@ import dotenv
 
 dotenv.load_dotenv()
 
-def test_search_gdelt(keywords=("climate change", "renewable energy"),
+def test_search_gdelt(keywords=("hurricane", "typhoon", "cyclone"),
                       project_id="masa-489401",
                       match_all=False,
                       days_back=7,

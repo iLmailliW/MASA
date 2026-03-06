@@ -20,6 +20,7 @@ def process_text_file(file_path, user_query):
 
     return response.text
 
+
 # Test code
 if __name__ == "__main__":
     path_to_txt = "gemini_test.txt"

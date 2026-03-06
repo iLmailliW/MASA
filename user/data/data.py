@@ -362,3 +362,86 @@ def search_credit_risk(symbol: str, output_file: str= ""):
         df.to_csv(output_file, index=False)
 
     return all_data
+
+
+def fetch_sp500_marketcaps(numrows: int = 500):
+    """
+    Fetches all S&P 500 companies and their market caps.
+
+    Returns:
+        DataFrame with columns:
+            ticker, name, sector, industry, market_cap, market_cap_billions
+        Sorted by market_cap descending.
+    """
+
+    # ── Step 1: Pull S&P 500 constituent list from Wikipedia ─────────────────
+    print(f"[{datetime.now():%H:%M:%S}] Fetching S&P 500 list from Wikipedia...")
+    url = "https://en.wikipedia.org/wiki/List_of_S%26P_500_companies"
+    headers = {"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"}
+    response = requests.get(url, headers=headers)
+    response.raise_for_status()
+    tables = pd.read_html(io.StringIO(response.text), flavor="lxml")
+    sp500 = tables[0][[
+        "Symbol", "Security", "GICS Sector", "GICS Sub-Industry"
+    ]].rename(columns={
+        "Symbol":            "ticker",
+        "Security":          "name",
+        "GICS Sector":       "sector",
+        "GICS Sub-Industry": "industry",
+    })
+
+    # Yahoo Finance uses "-" not "." in tickers (e.g. BRK.B → BRK-B)
+    sp500["ticker"] = sp500["ticker"].str.replace(".", "-", regex=False)
+    print(f"[{datetime.now():%H:%M:%S}] {len(sp500)} companies found.")
+
+    # ── Step 2: Fetch market caps from Yahoo Finance ──────────────────────────
+    print(f"[{datetime.now():%H:%M:%S}] Fetching market caps from Yahoo Finance...")
+
+    market_caps = []
+    total = len(sp500)
+
+
+    for i, row in sp500.iterrows():
+        ticker = row["ticker"]
+        try:
+            info = yf.Ticker(ticker).info
+            cap  = info.get("marketCap")
+        except Exception:
+            cap = None
+
+        market_caps.append(cap)
+
+        # Progress update every 50 tickers
+        n = list(sp500.index).index(i) + 1
+        if n % 50 == 0 or n == total:
+            print(f"[{datetime.now():%H:%M:%S}]   {n}/{total} fetched...")
+
+        # Be polite to Yahoo's servers
+        time.sleep(0.1)
+
+    # ── Step 3: Assemble and sort ─────────────────────────────────────────────
+    sp500["market_cap"]         = market_caps
+    sp500["market_cap_billions"] = sp500["market_cap"].apply(
+        lambda x: round(x / 1e9, 2) if x else None
+    )
+
+    df = sp500.sort_values("market_cap", ascending=False).reset_index(drop=True)
+    df.index += 1  # rank starts at 1
+
+    missing = df["market_cap"].isna().sum()
+    if missing:
+        print(f"[{datetime.now():%H:%M:%S}] Note: {missing} tickers returned no market cap data.")
+
+    print(f"[{datetime.now():%H:%M:%S}] Done. Largest: {df.iloc[0]['name']} "
+          f"(${df.iloc[0]['market_cap_billions']}B)")
+
+    return df.to_dict()
+
+def search_edgar():
+    pass
+
+def search_wto():
+    pass
+
+def search_fred():
+    pass
