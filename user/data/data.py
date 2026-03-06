@@ -9,6 +9,8 @@ import yfinance as yf
 import pandas as pd
 import numpy as np
 import time
+import re
+import xmltodict
 
 
 def search_gdelt(
@@ -364,7 +366,7 @@ def search_credit_risk(symbol: str, output_file: str= ""):
     return all_data
 
 
-def fetch_sp500_marketcaps(numrows: int = 500):
+def search_sp500_marketcaps():
     """
     Fetches all S&P 500 companies and their market caps.
 
@@ -437,11 +439,296 @@ def fetch_sp500_marketcaps(numrows: int = 500):
 
     return df.to_dict()
 
-def search_edgar():
-    pass
+#=============================
 
-def search_wto():
-    pass
+EDGAR_HEADERS = {"User-Agent": "research@example.com"}  # SEC requires a valid User-Agent
 
-def search_fred():
-    pass
+# ── XBRL tags to extract ──────────────────────────────────────────────────────
+# Each entry: (human label, [list of candidate XBRL tags in priority order])
+# Multiple candidates handle cases where companies use different tag names.
+EDGAR_XBRL_METRICS = {
+    # Cash Flow
+    "operating_cash_flow":    ["NetCashProvidedByUsedInOperatingActivities"],
+    "capex":                  ["PaymentsToAcquirePropertyPlantAndEquipment",
+                               "PaymentsForCapitalImprovements"],
+    "free_cash_flow":         ["FreeCashFlow"],  # not always reported; derived if missing
+
+    # Liquidity
+    "cash":                   ["CashAndCashEquivalentsAtCarryingValue",
+                               "CashCashEquivalentsAndShortTermInvestments"],
+    "current_assets":         ["AssetsCurrent"],
+    "current_liabilities":    ["LiabilitiesCurrent"],
+    "accounts_payable":       ["AccountsPayableCurrent"],
+
+    # Profitability / Coverage
+    "revenue":                ["RevenueFromContractWithCustomerExcludingAssessedTax",
+                               "Revenues", "SalesRevenueNet"],
+    "cogs":                   ["CostOfGoodsAndServicesSold",
+                               "CostOfRevenue", "CostOfGoodsSold"],
+    "operating_income":       ["OperatingIncomeLoss"],
+    "interest_expense":       ["InterestExpense",
+                               "InterestAndDebtExpense"],
+    "net_income":             ["NetIncomeLoss"],
+
+    # Debt
+    "long_term_debt":         ["LongTermDebt",
+                               "LongTermDebtNoncurrent"],
+    "current_long_term_debt": ["LongTermDebtCurrent",
+                               "CurrentPortionOfLongTermDebt"],
+}
+
+
+def search_edgar_financials(
+    cik: str,
+    company_name: str,
+    output_file: str = None,
+) -> dict:
+    """
+    Fetch key financial metrics from EDGAR XBRL and extract credit ratings
+    from the most recent 10-K filing.
+
+    Args:
+        cik          : SEC CIK number, with or without leading zeros (e.g. "0000320193" or "320193").
+        company_name : Company name, used for display and 10-K credit rating search.
+        output_file  : Optional path to save results as CSV.
+
+    Returns:
+        Dict with keys:
+            company, cik, retrieved_at,
+            metrics  -> dict of latest annual values for each financial metric,
+            derived  -> dict of calculated ratios (current_ratio, interest_coverage,
+                        dpo, free_cash_flow if not directly reported),
+            credit_ratings -> list of raw strings mentioning ratings found in 10-K,
+            periods  -> dict mapping each metric to the period it was reported for
+    """
+
+    cik_padded = cik.lstrip("0").zfill(10)  # EDGAR requires 10-digit zero-padded CIK
+
+    # ── 1. Fetch XBRL company facts ───────────────────────────────────────────
+    print(f"[{datetime.now():%H:%M:%S}] Fetching XBRL facts for CIK {cik_padded}...")
+    facts_url = f"https://data.sec.gov/api/xbrl/companyfacts/CIK{cik_padded}.json"
+    r = requests.get(facts_url, headers=EDGAR_HEADERS, timeout=30)
+    r.raise_for_status()
+    facts = r.json()
+
+    us_gaap = facts.get("facts", {}).get("us-gaap", {})
+
+    # ── 2. Extract latest annual value for each metric ────────────────────────
+    metrics = {}
+    periods = {}
+
+    for label, tags in EDGAR_XBRL_METRICS.items():
+        value, period = _get_latest_annual(us_gaap, tags)
+        metrics[label] = value
+        periods[label] = period
+
+    # ── 3. Derive ratios ──────────────────────────────────────────────────────
+    derived = {}
+
+    # Current Ratio = Current Assets / Current Liabilities
+    if metrics["current_assets"] and metrics["current_liabilities"]:
+        derived["current_ratio"] = round(
+            metrics["current_assets"] / metrics["current_liabilities"], 2
+        )
+
+    # Interest Coverage = Operating Income / Interest Expense
+    if metrics["operating_income"] and metrics["interest_expense"] and metrics["interest_expense"] != 0:
+        derived["interest_coverage_ratio"] = round(
+            metrics["operating_income"] / metrics["interest_expense"], 2
+        )
+
+    # DPO = Accounts Payable / COGS * 365
+    if metrics["accounts_payable"] and metrics["cogs"] and metrics["cogs"] != 0:
+        derived["days_payable_outstanding"] = round(
+            (metrics["accounts_payable"] / metrics["cogs"]) * 365, 1
+        )
+
+    # Free Cash Flow = Operating Cash Flow - CapEx (if not directly reported)
+    if not metrics["free_cash_flow"]:
+        if metrics["operating_cash_flow"] and metrics["capex"]:
+            derived["free_cash_flow"] = metrics["operating_cash_flow"] - metrics["capex"]
+    else:
+        derived["free_cash_flow"] = metrics["free_cash_flow"]
+
+    # ── 4. Fetch credit ratings from most recent 10-K ─────────────────────────
+    print(f"[{datetime.now():%H:%M:%S}] Fetching 10-K filings index...")
+    credit_ratings = _extract_credit_ratings(cik_padded)
+
+    # ── 5. Assemble result ────────────────────────────────────────────────────
+    result = {
+        "company":        company_name,
+        "cik":            cik_padded,
+        "retrieved_at":   datetime.now().isoformat(),
+        "metrics":        metrics,
+        "derived":        derived,
+        "credit_ratings": credit_ratings,
+        "periods":        periods,
+    }
+
+    _print_summary(result)
+
+    # ── 6. Optionally save CSV ────────────────────────────────────────────────
+    if output_file:
+        _save_csv(result, output_file)
+
+    return result
+
+
+# ── Helpers ───────────────────────────────────────────────────────────────────
+
+def _get_latest_annual(us_gaap: dict, tags: list) -> tuple:
+    """
+    Try each tag in order, return the most recent annual (10-K) value and its period.
+    Returns (None, None) if no data found.
+    """
+    for tag in tags:
+        data = us_gaap.get(tag, {})
+        units = data.get("units", {})
+        entries = units.get("USD", units.get("shares", []))
+
+        # Filter to annual 10-K filings only
+        annual = [
+            e for e in entries
+            if e.get("form") in ("10-K", "10-K/A")
+            and e.get("fp") == "FY"
+        ]
+        if not annual:
+            continue
+
+        # Sort by end date descending, take most recent
+        annual.sort(key=lambda x: x.get("end", ""), reverse=True)
+        latest = annual[0]
+        return latest.get("val"), latest.get("end")
+
+    return None, None
+
+
+def _extract_credit_ratings(cik_padded: str) -> list:
+    """
+    Fetches the most recent 10-K filing and searches for credit rating mentions.
+    Returns a list of unique matched strings.
+    """
+    # Get filing index
+    sub_url = f"https://data.sec.gov/submissions/CIK{cik_padded}.json"
+    r = requests.get(sub_url, headers=EDGAR_HEADERS, timeout=30)
+    r.raise_for_status()
+    submissions = r.json()
+
+    filings = submissions.get("filings", {}).get("recent", {})
+    forms   = filings.get("form", [])
+    docs    = filings.get("primaryDocument", [])
+    accnums = filings.get("accessionNumber", [])
+
+    # Find most recent 10-K
+    ten_k_idx = next((i for i, f in enumerate(forms) if f == "10-K"), None)
+    if ten_k_idx is None:
+        print(f"[{datetime.now():%H:%M:%S}] No 10-K found.")
+        return []
+
+    accession = accnums[ten_k_idx].replace("-", "")
+    doc       = docs[ten_k_idx]
+    filing_url = f"https://www.sec.gov/Archives/edgar/data/{int(cik_padded)}/{accession}/{doc}"
+
+    print(f"[{datetime.now():%H:%M:%S}] Fetching 10-K: {filing_url}")
+    try:
+        r = requests.get(filing_url, headers=EDGAR_HEADERS, timeout=60)
+        r.raise_for_status()
+        text = r.text
+    except Exception as e:
+        print(f"[{datetime.now():%H:%M:%S}] Could not fetch 10-K: {e}")
+        return []
+
+    # Search for credit rating patterns
+    # Matches things like: "A+", "Baa1", "BBB-", "investment grade", "Moody's ... Aa3"
+    patterns = [
+        r"(?:Moody['\u2019]?s|S&P|Standard\s*&\s*Poor['\u2019]?s|Fitch)[^.]{0,80}?(?:rated?|rating|assigned)[^.]{0,80}\.",
+        r"(?:rated?|rating(?:s)?)[^.]{0,60}?(?:Aaa|Aa[123]|A[123]|Baa[123]|Ba[123]|B[123]|Caa|Ca|C|AAA|AA[+-]?|A[+-]?|BBB[+-]?|BB[+-]?|B[+-]?|CCC[+-]?|CC|D)[^.]{0,40}\.",
+        r"(?:Aaa|Aa[123]|A[123]|Baa[123]|Ba[123]|B[123]|AAA|AA[+-]?|A[+-]?|BBB[+-]?|BB[+-]?|B[+-]?|CCC[+-]?)[^.]{0,60}?(?:Moody|S&P|Fitch|rated?|rating|outlook)[^.]{0,60}\.",
+        r"investment[\s-]grade",
+        r"speculative[\s-]grade",
+        r"credit\s+(?:rating|outlook)[^.]{0,120}\.",
+    ]
+
+    matches = set()
+    clean_text = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", text))  # strip HTML tags
+
+    for pattern in patterns:
+        for m in re.finditer(pattern, clean_text, re.IGNORECASE):
+            snippet = m.group(0).strip()
+            if len(snippet) > 20:  # filter out very short noise matches
+                matches.add(snippet)
+
+    ratings = sorted(matches)
+    print(f"[{datetime.now():%H:%M:%S}] Found {len(ratings)} credit rating mention(s) in 10-K.")
+    return ratings
+
+
+def _print_summary(result: dict) -> None:
+    m = result["metrics"]
+    d = result["derived"]
+
+    def fmt(val, divisor=1e9, suffix="B"):
+        if val is None:
+            return "N/A"
+        return f"${val / divisor:.2f}{suffix}"
+
+    print(f"\n{'='*55}")
+    print(f"  {result['company']} (CIK: {result['cik']})")
+    print(f"{'='*55}")
+    print(f"  Revenue              : {fmt(m['revenue'])}")
+    print(f"  Operating Income     : {fmt(m['operating_income'])}")
+    print(f"  Net Income           : {fmt(m['net_income'])}")
+    print(f"  Operating Cash Flow  : {fmt(m['operating_cash_flow'])}")
+    print(f"  Free Cash Flow       : {fmt(d.get('free_cash_flow'))}")
+    print(f"  Cash                 : {fmt(m['cash'])}")
+    print(f"  Current Ratio        : {d.get('current_ratio', 'N/A')}")
+    print(f"  Interest Coverage    : {d.get('interest_coverage_ratio', 'N/A')}x")
+    print(f"  Days Payable (DPO)   : {d.get('days_payable_outstanding', 'N/A')} days")
+    print(f"  Long-term Debt       : {fmt(m['long_term_debt'])}")
+    if result["credit_ratings"]:
+        print(f"\n  Credit Rating Mentions ({len(result['credit_ratings'])}):")
+        for r in result["credit_ratings"][:5]:  # show first 5
+            print(f"    - {r[:120]}")
+    print(f"{'='*55}\n")
+
+
+def _save_csv(result: dict, output_file: str) -> None:
+    rows = []
+
+    # Metrics
+    for key, val in result["metrics"].items():
+        rows.append({
+            "category": "metric",
+            "key":      key,
+            "value":    val,
+            "period":   result["periods"].get(key, ""),
+        })
+
+    # Derived
+    for key, val in result["derived"].items():
+        rows.append({
+            "category": "derived",
+            "key":      key,
+            "value":    val,
+            "period":   "",
+        })
+
+    # Credit ratings
+    for rating in result["credit_ratings"]:
+        rows.append({
+            "category": "credit_rating",
+            "key":      "mention",
+            "value":    rating,
+            "period":   "",
+        })
+
+    buf = io.StringIO()
+    writer = csv.DictWriter(buf, fieldnames=["category", "key", "value", "period"])
+    writer.writeheader()
+    writer.writerows(rows)
+
+    with open(output_file, "w", encoding="utf-8", newline="") as f:
+        f.write(buf.getvalue())
+
+    print(f"[{datetime.now():%H:%M:%S}] Saved to: {output_file}")
+
