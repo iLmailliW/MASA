@@ -3,42 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <title>MASA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Raleway:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 40px;
+
+        }
+        form {
+            background: #fff;
+            padding: 30px 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            max-width: 1000px;
+            width: 90%;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            align-items: left;
+        }
+        legend h1 {
+            font-family: 'Raleway', sans-serif;
+            color: #4A90E2;
+            text-align: left;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            text-align: left;
+        }
+          p {
+        text-align: left;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            font-size: 1.1em;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #4A90E2;
+            box-shadow: 0 0 5px rgba(74,144,226,0.5);
+        }
+        input[type="submit"] {
+            background-color: #9ABDDC;
+            font-family: 'Raleway', sans-serif;
+            color: black;
+            border: none;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        input[type="submit"]:hover {
+            background-color: #357ABD;
+            color: white;
+        }
+        p {
+            color: red;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+    </style>
 </head>
 {% load static %}
 <link rel="stylesheet" href="{% static 'user/style.css' %}">
 <body>
     <form action="{% url 'user:index' %}" method="post">
-    {% csrf_token %}
-    <legend><h1>{{ question.question_text }}</h1></legend>
-    {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-    <label>Please enter your company's name.</label><br>
-    <input type="text" name="name" value="{{data.name}}" required><br>
+        {% csrf_token %}
+        <legend><h1>{{ question.question_text }}</h1></legend>
+        {% if error_message %}<p>{{ error_message }}</p>{% endif %}
 
-    <label>Please enter the industry your company falls within.</label><br>
-    <input type="text" name="industry" value="{{data.industry}}" required><br>
+        <label>Please enter your company's name.</label>
+        <input type="text" name="name" value="{{data.name}}" required>
 
-    <label>Enter the country your company is located within.</label><br>
-    <input type="text" name="country" value="{{data.country}}" required><br>
+        <label>Please enter the industry your company falls within.</label>
+        <input type="text" name="industry" value="{{data.industry}}" required>
 
-    <label>Enter the city your company is located within.</label><br>
-    <input type="text" name="city" value="{{data.city}}" required><br>
+        <label>Enter the country your company is located within.</label>
+        <input type="text" name="country" value="{{data.country}}" required>
 
-    <label>Enter the year your company was founded.</label><br>
-    <input type="number" name="year" value="{{data.year}}" required><br>
+        <label>Enter the city your company is located within.</label>
+        <input type="text" name="city" value="{{data.city}}" required>
 
-    <label>Enter the annual EBITDA of your company's current project.</label><br>
-    <input type="number" name="proj_EBITDA" step="0.01" value="{{data.proj_EBITDA}}" required><br>
+        <label>Enter the year your company was founded.</label>
+        <input type="number" name="year" value="{{data.year}}" required>
+
+        <label>Enter the annual EBITDA of your company's current project.</label>
+        <input type="number" name="proj_EBITDA" step="0.01" value="{{data.proj_EBITDA}}" required>
 
     <label>Enter the annual EBITDA of your company.</label><br>
     <input type="number" name="company_EBITDA" step="0.01" min="0.01" value="{{data.company_EBITDA}}" required><br>
 
-    <label>Enter the enterprise value of your company. (USD)</label><br>
-    <input type="number" name="value" step="0.01" value="{{data.value}}" required><br>
+        <label>Enter the enterprise value of your company. (USD)</label>
+        <input type="number" name="value" step="0.01" value="{{data.value}}" required>
 
-    <label>Enter your company's risk appetite (0-1)</label><br>
-    <input type="number" min="0" max="1" name="risk" step="0.01" value="{{data.risk}}" required><br>
+        <label>Enter your company's risk appetite (0-1)</label>
+        <input type="number" min="0" max="1" name="risk" step="0.01" value="{{data.risk}}" required>
 
-    <input type="submit" value="Submit">
+        <input type="submit" value="Submit">
     </form>
 </body>
 </html>
