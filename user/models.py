@@ -17,6 +17,13 @@ class Company(models.Model):
         value: Enterprise Value
         risk: Risk Appetite
         date: Date this information was uploaded
+        on_hand: Current inventory units immediately available
+        safety_stock: Buffer stock level maintained to mitigate stockouts
+        reoder_points: Inventory level threshold that triggers a new purchase order
+        order_backlog: Number of customer orders received but not yet fulfilled
+        production_schedule: Planned output or manufacturing volume for a given period
+        supplier_concentration: Measure of dependency on specific suppliers
+        lead_time_sensitivity: Impact level of supply delays on business operations
     """
     name = models.CharField(max_length=200)
     industry = models.CharField(max_length=100)
@@ -28,6 +35,13 @@ class Company(models.Model):
     value = models.FloatField()
     risk = models.FloatField()
     time = models.DateTimeField("time uploaded", default=datetime.now())
+    on_hand = models.IntegerField("On-Hand Inventory")
+    safety_stock = models.IntegerField("Safety Stock Levels")
+    reorder_points = models.IntegerField("Reorder Points")
+    order_backlog = models.IntegerField("Order Backlog")
+    production_schedule = models.IntegerField("Production Schedule")
+    supplier_concentration = models.IntegerField("Supplier Concentration")
+    lead_time_sensitivity = models.IntegerField("Lead-Time Sensitivity")
 
     def __str__(self):
         data = {
@@ -40,7 +54,14 @@ class Company(models.Model):
             "company EBITDA": self.company_ebitda,
             "value": self.value,
             "risk": self.risk,
-            "time": self.time
+            "time": self.time,
+            "On-Hand Inventory": self.on_hand,
+            "Safety Stock Levels": self.safety_stock,
+            "Reorder Points": self.reorder_points,
+            "Order Backlog": self.order_backlog,
+            "Production Schedule": self.production_schedule,
+            "Supplier Concentration": self.supplier_concentration,
+            "Lead-Time Sensitivity": self.order_backlog
         }
         return "ID: " + str(self.id) + ", Uploaded: " + str(data["time"])
 

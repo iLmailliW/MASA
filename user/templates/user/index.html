@@ -119,8 +119,10 @@ section {
 </style>
 </head>
 <body>
-<form action="{% url 'user:index' %}" method="post">
-    {% csrf_token %}
+    <form action="{% url 'user:index' %}" method="post">
+        {% csrf_token %}
+        <legend><h1>{{ question.question_text }}</h1></legend>
+        {% if error_message %}<p class="error">{{ error_message }}</p>{% endif %}
 
     <!-- Company Info -->
     <fieldset>
@@ -170,7 +172,30 @@ section {
         <span class="help-text">0 = very low risk tolerance, 1 = very high.</span>
     </fieldset>
 
-    <input type="submit" value="Submit">
-</form>
+        <h2>Supply Chain Metrics</h2>
+
+        <label>On-Hand Inventory</label>
+        <input type="number" name="on_hand" value="{{data.on_hand}}" required>
+
+        <label>Safety Stock Levels</label>
+        <input type="number" name="safety_stock" value="{{data.safety_stock}}" required>
+
+        <label>Reorder Points</label>
+        <input type="number" name="reorder_points" value="{{data.reorder_points}}" required>
+
+        <label>Order Backlog</label>
+        <input type="number" name="order_backlog" value="{{data.order_backlog}}" required>
+
+        <label>Production Schedule</label>
+        <input type="number" name="production_schedule" value="{{data.production_schedule}}" required>
+
+        <label>Supplier Concentration</label>
+        <input type="number" name="supplier_concentration" value="{{data.supplier_concentration}}" required>
+
+        <label>Lead-Time Sensitivity</label>
+        <input type="number" name="lead_time_sensitivity" value="{{data.lead_time_sensitivity}}" required>
+
+        <input type="submit" value="Submit">
+    </form>
 </body>
 </html>
