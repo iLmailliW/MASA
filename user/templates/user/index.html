@@ -86,7 +86,7 @@
     <form action="{% url 'user:index' %}" method="post">
         {% csrf_token %}
         <legend><h1>{{ question.question_text }}</h1></legend>
-        {% if error_message %}<p>{{ error_message }}</p>{% endif %}
+        {% if error_message %}<p class="error">{{ error_message }}</p>{% endif %}
 
         <label>Please enter your company's name.</label>
         <input type="text" name="name" value="{{data.name}}" required>
@@ -106,14 +106,37 @@
         <label>Enter the annual EBITDA of your company's current project.</label>
         <input type="number" name="proj_EBITDA" step="0.01" value="{{data.proj_EBITDA}}" required>
 
-    <label>Enter the annual EBITDA of your company.</label><br>
-    <input type="number" name="company_EBITDA" step="0.01" min="0.01" value="{{data.company_EBITDA}}" required><br>
+        <label>Enter the annual EBITDA of your company.</label>
+        <input type="number" name="company_EBITDA" step="0.01" min="0.01" value="{{data.company_EBITDA}}" required>
 
         <label>Enter the enterprise value of your company. (USD)</label>
         <input type="number" name="value" step="0.01" value="{{data.value}}" required>
 
         <label>Enter your company's risk appetite (0-1)</label>
         <input type="number" min="0" max="1" name="risk" step="0.01" value="{{data.risk}}" required>
+
+        <h2>Supply Chain Metrics</h2>
+
+        <label>On-Hand Inventory</label>
+        <input type="number" name="on_hand" value="{{data.on_hand}}" required>
+
+        <label>Safety Stock Levels</label>
+        <input type="number" name="safety_stock" value="{{data.safety_stock}}" required>
+
+        <label>Reorder Points</label>
+        <input type="number" name="reorder_points" value="{{data.reorder_points}}" required>
+
+        <label>Order Backlog</label>
+        <input type="number" name="order_backlog" value="{{data.order_backlog}}" required>
+
+        <label>Production Schedule</label>
+        <input type="number" name="production_schedule" value="{{data.production_schedule}}" required>
+
+        <label>Supplier Concentration</label>
+        <input type="number" name="supplier_concentration" value="{{data.supplier_concentration}}" required>
+
+        <label>Lead-Time Sensitivity</label>
+        <input type="number" name="lead_time_sensitivity" value="{{data.lead_time_sensitivity}}" required>
 
         <input type="submit" value="Submit">
     </form>

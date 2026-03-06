@@ -19,7 +19,14 @@ def index(request):
             company_ebitda=request.POST.get("company_EBITDA"),
             value=request.POST.get("value"),
             risk=request.POST.get("risk"),
-            time=datetime.datetime.now()
+            time=datetime.datetime.now(),
+            on_hand=request.POST.get("on_hand"),
+            safety_stock=request.POST.get("safety_stock"),
+            reoder_points=request.POST.get("reoder_points"),  # Matches your model typo
+            order_backlog=request.POST.get("order_backlog"),
+            production_schedule=request.POST.get("production_schedule"),
+            supplier_concentration=request.POST.get("supplier_concentration"),
+            lead_time_sensitivity=request.POST.get("lead_time_sensitivity")
         )
         # save data here if needed
         return HttpResponseRedirect(reverse('user:response', args=(new_company.id,)))
@@ -53,18 +60,18 @@ def response(request, company_id):
     news_geopolitics = algorithm.calc_news_geopolitics(trade_policy=trade_policy,
                                                        geopolitical_conflict=geopolitical_conflict,
                                                        commodity_volatility=commodity_volatility)
-    on_hand = 0.0  # TODO: WL
-    safety_stock = 0.0  # TODO: WL
-    reoder_points = 0.0  # TODO: WL
+    on_hand = company.on_hand
+    safety_stock = company.safety_stock
+    reorder_points = company.reorder_points
     inventory = algorithm.calc_inventory(on_hand=on_hand,
                                          safety_stock=safety_stock,
-                                         reorder_points=reoder_points)
-    order_backlog = 0.0  # TODO: WL
-    production_schedule = 0.0  # TODO: WL
+                                         reorder_points=reorder_points)
+    order_backlog = company.order_backlog
+    production_schedule = company.production_schedule
     production = algorithm.calc_production(order_backlog=order_backlog,
                                            production_schedule=production_schedule)
-    supplier_concentration = 0.0  # TODO: WL
-    lead_time_sensitivity = 0.0  # TODO: WL
+    supplier_concentration = company.supplier_concentration
+    lead_time_sensitivity = company.lead_time_sensitivity
     procurement = algorithm.calc_procurement(supplier_concentration=supplier_concentration,
                                              lead_time_sensitivity=lead_time_sensitivity)
     external = algorithm.calc_external(logistics_iot=logistics_iot,

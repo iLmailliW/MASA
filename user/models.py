@@ -37,7 +37,7 @@ class Company(models.Model):
     time = models.DateTimeField("time uploaded", default=datetime.now())
     on_hand = models.IntegerField("On-Hand Inventory")
     safety_stock = models.IntegerField("Safety Stock Levels")
-    reoder_points = models.IntegerField("Reorder Points")
+    reorder_points = models.IntegerField("Reorder Points")
     order_backlog = models.IntegerField("Order Backlog")
     production_schedule = models.IntegerField("Production Schedule")
     supplier_concentration = models.IntegerField("Supplier Concentration")
@@ -57,7 +57,7 @@ class Company(models.Model):
             "time": self.time,
             "On-Hand Inventory": self.on_hand,
             "Safety Stock Levels": self.safety_stock,
-            "Reorder Points": self.reoder_points,
+            "Reorder Points": self.reorder_points,
             "Order Backlog": self.order_backlog,
             "Production Schedule": self.production_schedule,
             "Supplier Concentration": self.supplier_concentration,
