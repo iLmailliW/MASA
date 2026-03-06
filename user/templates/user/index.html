@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>MASA</title>
 </head>
+{% load static %}
+<link rel="stylesheet" href="{% static 'user/style.css' %}">
 <body>
     <form action="{% url 'user:index' %}" method="post">
     {% csrf_token %}
@@ -28,7 +30,7 @@
     <input type="number" name="proj_EBITDA" step="0.01" value="{{data.proj_EBITDA}}" required><br>
 
     <label>Enter the annual EBITDA of your company.</label><br>
-    <input type="number" name="company_EBITDA" step="0.01" value="{{data.company_EBITDA}}" required><br>
+    <input type="number" name="company_EBITDA" step="0.01" min="0.01" value="{{data.company_EBITDA}}" required><br>
 
     <label>Enter the enterprise value of your company. (USD)</label><br>
     <input type="number" name="value" step="0.01" value="{{data.value}}" required><br>

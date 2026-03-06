@@ -3,6 +3,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from .models import Company
 import datetime
+from .risk_score_assessment import risk_score_assessment
 
 
 def index(request):
@@ -18,15 +19,17 @@ def index(request):
             company_ebitda=request.POST.get("company_EBITDA"),
             value=request.POST.get("value"),
             risk=request.POST.get("risk"),
-            date=datetime.date.today()
+            time=datetime.datetime.now()
         )
         # save data here if needed
-        return HttpResponseRedirect(reverse('user:response', args=(new_company.name,)))
+        return HttpResponseRedirect(reverse('user:response', args=(new_company.id,)))
 
     return render(request, "user/index.html")
 
-def response(request, name):
-    company = get_object_or_404(Company, name=name)
+
+#This method renders the results page. It has to call any function necessary to get the result
+def response(request, company_id):
+    company = get_object_or_404(Company, pk=company_id)
     country = company.country
     company_data = {
         "name": company.name,
@@ -38,8 +41,10 @@ def response(request, name):
         "company_EBITDA": company.company_ebitda,
         "value": company.value,
         "risk": company.risk,
-        "date": company.date
+        "time": company.time
     }
-    company.delete()
-    context = {}
+    assessment = risk_score_assessment(score=0.5, appetite=company_data["risk"])
+    context = {"risk_assessment": assessment}
+    #TODO: call all functions to get and process data
     return render(request, "user/response.html", context)
+

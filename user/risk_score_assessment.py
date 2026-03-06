@@ -38,3 +38,4 @@ def risk_score_assessment(score: float, appetite: float) -> str:
             return "Low Risk"
         else:
             return "Minimal Risk"
+

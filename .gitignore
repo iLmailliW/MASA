@@ -2,3 +2,7 @@
 .env
 db.sqlite3
 __pycache__
+user/data/credentials.json
+user/data/company_financials.csv
+user/data/gemini_test.txt
+
