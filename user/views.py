@@ -34,7 +34,7 @@ def index(request):
     return render(request, "user/index.html")
 
 
-#This method renders the results page. It has to call any function necessary to get the result
+# This method renders the results page. It has to call any function necessary to get the result
 def response(request, company_id):
     company = get_object_or_404(Company, pk=company_id)
     industry_max_value = 0.0  #TODO: dependent on William Li (WL)
@@ -60,18 +60,18 @@ def response(request, company_id):
     news_geopolitics = algorithm.calc_news_geopolitics(trade_policy=trade_policy,
                                                        geopolitical_conflict=geopolitical_conflict,
                                                        commodity_volatility=commodity_volatility)
-    on_hand = company.on_hand
-    safety_stock = company.safety_stock
-    reorder_points = company.reorder_points
+    on_hand = company.on_hand / 100
+    safety_stock = company.safety_stock / 100
+    reorder_points = company.reorder_points / 100
     inventory = algorithm.calc_inventory(on_hand=on_hand,
                                          safety_stock=safety_stock,
                                          reorder_points=reorder_points)
-    order_backlog = company.order_backlog
-    production_schedule = company.production_schedule
+    order_backlog = company.order_backlog / 100
+    production_schedule = company.production_schedule / 100
     production = algorithm.calc_production(order_backlog=order_backlog,
                                            production_schedule=production_schedule)
-    supplier_concentration = company.supplier_concentration
-    lead_time_sensitivity = company.lead_time_sensitivity
+    supplier_concentration = company.supplier_concentration / 100
+    lead_time_sensitivity = company.lead_time_sensitivity / 100
     procurement = algorithm.calc_procurement(supplier_concentration=supplier_concentration,
                                              lead_time_sensitivity=lead_time_sensitivity)
     external = algorithm.calc_external(logistics_iot=logistics_iot,
@@ -91,7 +91,10 @@ def response(request, company_id):
                                                                      procurement=procurement)
     severe_risks = algorithm.identify_severe_risks(sub_sub_risk_scores)
     analysis = ""
-    result_dict = {"Risk Appetite": risk_appetite,
+    result_dict = {"Company Name": company.name,
+                   "Company Industry": company.industry,
+                   "Company"
+                   "Risk Appetite": risk_appetite,
                    "External Score": external,
                    "Internal Score": internal,
                    "Risk Score": risk_score,
