@@ -99,33 +99,40 @@ def calc_procurement(supplier_concentration: float, lead_time_sensitivity: float
 
 
 def calc_external(logistics_iot: float, supplier_health: float, news_geopolitics: float) -> float:
-    """
+    """Calculate the total External Risk score by weighting three global signal categories.
+    Weights: Logistics/IoT (50%), Supplier Health (30%), News/Geopolitics (20%).
 
-    :param logistics_iot:
-    :param supplier_health:
-    :param news_geopolitics:
-    :return:
+    Preconditions:
+        - 0.0 <= logistics_iot, supplier_health, news_geopolitics <= 1.0
+
+    >>> calc_external(0.8, 0.4, 0.5) # (0.4 + 0.12 + 0.1)
+    0.62
     """
     return (0.5 * logistics_iot) + (0.3 * supplier_health) + (0.2 * news_geopolitics)
 
 
 def calc_internal(inventory: float, production: float, procurement: float) -> float:
-    """
+    """Calculate the total Internal Risk score by weighting operational data categories.
+    Weights: Inventory (30%), Production (45%), Procurement (25%).
 
-    :param inventory:
-    :param production:
-    :param procurement:
-    :return:
+    Preconditions:
+        - 0.0 <= inventory, production, procurement <= 1.0
+
+    >>> calc_internal(0.2, 0.6, 0.8) # (0.06 + 0.27 + 0.2)
+    0.53
     """
     return (0.3 * inventory) + (0.45 * production) + (0.25 * procurement)
 
 
 def calc_risk_score(external: float, internal: float) -> float:
-    """
+    """Calculate the final aggregate Risk Score by balancing external and internal inputs.
+    Weights: External Data (50%) and Internal Data (50%).
 
-    :param external:
-    :param internal:
-    :return:
+    Preconditions:
+        - 0.0 <= external, internal <= 1.0
+
+    >>> calc_risk_score(0.62, 0.53) # (0.31 + 0.265)
+    0.575
     """
     return round((0.5 * external) + (0.5 * internal), 3)
 
@@ -136,8 +143,7 @@ def risk_score_assessment(risk_score: float, risk_appetite: float) -> str:
     Risk", "Minimal Risk"]
 
     Preconditions:
-        - 0 <= score <= 1
-        - 0 <= appetite <= 1
+        - 0 <= score, appetite <= 1
 
     >>> risk_score_assessment(0.8, 0.5)
     "High Risk"
@@ -172,22 +178,32 @@ def risk_score_assessment(risk_score: float, risk_appetite: float) -> str:
             return "Minimal Risk"
 
 
-def generate_sub_variable_score_list(logistics_iot: float, supplier_health: float, news_geopolitics: float,
-                                     inventory: float, production: float, procurement: float) -> list[str]:
-    """
+def generate_all_sub_sub_risk_scores(logistics_iot: float, supplier_health: float, news_geopolitics: float,
+                                     inventory: float, production: float, procurement: float) -> dict[str, float]:
+    """ Return a dictionary mapping each supply chain criteria to its calculated risk severity score.
 
-    :param logistics_iot:
-    :param supplier_health:
-    :param news_geopolitics:
-    :param inventory:
-    :param production:
-    :param procurement:
-    :return:
+    Preconditions:
+        - 0.0 <= logistics_iot, supplier_health, news_geopolitics, inventory, production, procurement <= 1.0
     """
-    lst = {"Logistics/IOT": logistics_iot, "Supplier Health": supplier_health, "News/Geopolitics": news_geopolitics,
-           "Inventory": inventory, "Production": production, "Procurement": procurement}
-    lst_updated = []
-    for key, value in lst_sub_variables:
-        if value > 0.5:
-            lst_updated.append(key)
-    return lst_updated
+    return {"Logistics/IOT": logistics_iot,
+            "Supplier Health": supplier_health,
+            "News/Geopolitics": news_geopolitics,
+            "Inventory": inventory,
+            "Production": production,
+            "Procurement": procurement}
+
+
+def identify_severe_risks(scores: dict[str, float]) -> list[str]:
+    """Identify and return the keys of severe risks from the scores dictionary. A risk is severe if its score is > 0.5.
+    If no risks meet this threshold, return the 3 highest risk categories.
+
+    Preconditions:
+        - scores is a dictionary mapping strings to floats between 0.0 and 1.0, with the same format as the output of
+          generate_all_sub_sub_risk_scores().
+    """
+    severe_risks = [key for key, value in scores.items() if value > 0.5]
+    if not severe_risks:
+        sorted_scores = sorted(scores.items(), key=lambda category: category[1], reverse=True)
+        severe_risk_category_and_scores = sorted_scores[:3]
+        severe_risks = [category[0] for category in severe_risk_category_and_scores]
+    return severe_risks

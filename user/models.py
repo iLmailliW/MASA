@@ -1,5 +1,5 @@
 from django.db import models
-from dataclasses import dataclass
+from datetime import datetime
 
 
 class Company(models.Model):
@@ -27,7 +27,7 @@ class Company(models.Model):
     company_ebitda = models.FloatField("annual company EBITDA")
     value = models.FloatField()
     risk = models.FloatField()
-    date = models.DateField("date uploaded")
+    time = models.DateTimeField("time uploaded", default=datetime.now())
 
     def __str__(self):
         data = {
@@ -40,15 +40,15 @@ class Company(models.Model):
             "company EBITDA": self.company_ebitda,
             "value": self.value,
             "risk": self.risk,
-            "date": self.date
+            "time": self.time
         }
-        return str(data)
+        return "ID: " + str(self.id) + ", Uploaded: " + str(data["time"])
 
 
 class Response(models.Model):
     response_text = models.TextField()
     company = models.OneToOneField(Company, on_delete=models.CASCADE)
-    date = models.DateTimeField("date generated")
+    date = models.DateTimeField("time generated")
 
     def __str__(self):
         return self.response_text
