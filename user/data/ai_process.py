@@ -1,5 +1,7 @@
 from google import genai
 from dotenv import load_dotenv
+import os
+
 
 load_dotenv()
 
@@ -7,13 +9,13 @@ load_dotenv()
 client = genai.Client()
 
 def process_text_file(file_path, user_query):
-    # Upload the file before prompting
+    """ Upload the file before prompting
+    """
     my_file = client.files.upload(file=file_path, config={"mime_type": "text/csv", "display_name": "data"})
 
     response = client.models.generate_content(
         model="gemini-3.1-flash-lite-preview",
-        contents=[my_file, user_query],
-
+        contents=[my_file, user_query]
     )
 
     return response.text
@@ -25,7 +27,6 @@ def process_string(prompt, user_query):
     )
 
     return response.text
-
 
 
 # Test code
