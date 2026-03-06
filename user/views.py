@@ -3,7 +3,6 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from .models import Company
 import datetime
-from .risk_score_assessment import risk_score_assessment
 
 
 def index(request):
@@ -47,4 +46,3 @@ def response(request, company_id):
     context = {"risk_assessment": assessment}
     #TODO: call all functions to get and process data
     return render(request, "user/response.html", context)
-

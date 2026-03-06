@@ -1,121 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>MASA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Raleway:wght@700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f5f5f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 40px;
+<meta charset="UTF-8">
+<title>MASA User Form</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&family=Raleway:wght@700&display=swap" rel="stylesheet">
+<style>
+body {
+    font-family: 'Poppins', sans-serif;
+    background: #0a0a0a;
+    display: flex;
+    justify-content: center;
+    padding: 20px;
+    color: #e0e0e0;
+}
 
-        }
-        form {
-            background: #fff;
-            padding: 30px 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            max-width: 1000px;
-            width: 90%;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: left;
-        }
-        legend h1 {
-            font-family: 'Raleway', sans-serif;
-            color: #4A90E2;
-            text-align: left;
-            margin-bottom: 20px;
-            font-size: 1.8em;
-        }
-        label {
-            display: block;
-            margin-bottom: 6px;
-            font-weight: 500;
-            text-align: left;
-        }
-          p {
-        text-align: left;
-        }
+form {
+    background: #111;
+    padding: 40px 50px;
+    border-radius: 15px;
+    box-shadow: 0 0 50px rgba(168,218,220,0.3);
+    width: 95%;
+    max-width: 850px;
+    display: flex;
+    flex-direction: column;
+    border: 2px solid rgba(168,218,220,0.4);
+}
 
-        input[type="text"],
-        input[type="number"],
-        input[type="submit"] {
-            width: 100%;
-            padding: 12px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            font-size: 1.1em;
-            border: 1px solid #ccc;
-            box-sizing: border-box;
-        }
-        input[type="text"]:focus,
-        input[type="number"]:focus {
-            outline: none;
-            border-color: #4A90E2;
-            box-shadow: 0 0 5px rgba(74,144,226,0.5);
-        }
-        input[type="submit"] {
-            background-color: #9ABDDC;
-            font-family: 'Raleway', sans-serif;
-            color: black;
-            border: none;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-        input[type="submit"]:hover {
-            background-color: #357ABD;
-            color: white;
-        }
-        p {
-            color: red;
-            font-weight: 600;
-            margin-bottom: 15px;
-        }
-    </style>
+h2 {
+    color: #a8dadc;
+    margin-bottom: 20px;
+    font-size: 1.6em;
+    border-bottom: 1px solid rgba(168,218,220,0.4);
+    padding-bottom: 5px;
+}
+
+fieldset {
+    border: 1px solid rgba(168,218,220,0.4);
+    border-radius: 10px;
+    margin-bottom: 25px;
+    padding: 25px 20px 20px 20px;
+    position: relative;
+}
+
+legend {
+    font-weight: 600;
+    color: #ffd6a5;
+    font-size: 1.2em;
+}
+
+label {
+    margin-top: 10px;
+    margin-bottom: 4px;
+    font-size: 0.95em;
+    font-weight: 500;
+    display: block;
+}
+
+input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    border: 1px solid #555;
+    background: #1a1a1a;
+    color: #e0e0e0;
+    font-size: 0.95em;
+    box-sizing: border-box;
+    transition: all 0.3s;
+}
+
+input[type="text"]:focus, input[type="number"]:focus {
+    outline: none;
+    border-color: #a8dadc;
+    box-shadow: 0 0 12px rgba(168,218,220,0.7);
+}
+
+input[type="submit"] {
+    background-color: #a8dadc;
+    color: #0a0a0a;
+    font-family: 'Raleway', sans-serif;
+    font-size: 1em;
+    padding: 15px;
+    border-radius: 40px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 0 25px rgba(168,218,220,0.5);
+    transition: all 0.3s;
+}
+
+input[type="submit"]:hover {
+    background-color: #ffb703;
+    color: #0a0a0a;
+    box-shadow: 0 0 30px rgba(255,183,3,0.7);
+    transform: translateY(-2px);
+}
+
+.help-text {
+    font-size: 0.8em;
+    color: #b0b0b0;
+    margin-bottom: 10px;
+}
+
+section {
+    margin-bottom: 25px;
+}
+
+/* Flex for two-column fields */
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.row .col {
+    flex: 1 1 45%;
+    min-width: 200px;
+}
+</style>
 </head>
-{% load static %}
-<link rel="stylesheet" href="{% static 'user/style.css' %}">
 <body>
-    <form action="{% url 'user:index' %}" method="post">
-        {% csrf_token %}
-        <legend><h1>{{ question.question_text }}</h1></legend>
-        {% if error_message %}<p>{{ error_message }}</p>{% endif %}
+<form action="{% url 'user:index' %}" method="post">
+    {% csrf_token %}
 
-        <label>Please enter your company's name.</label>
+    <!-- Company Info -->
+    <fieldset>
+        <legend>Company Info</legend>
+
+        <label>Company Name</label>
         <input type="text" name="name" value="{{data.name}}" required>
+        <span class="help-text">The official registered name of your company.</span>
 
-        <label>Please enter the industry your company falls within.</label>
+        <label>Industry</label>
         <input type="text" name="industry" value="{{data.industry}}" required>
+        <span class="help-text">E.g., Automotive, Electronics, Consumer Goods.</span>
 
-        <label>Enter the country your company is located within.</label>
-        <input type="text" name="country" value="{{data.country}}" required>
+        <div class="row">
+            <div class="col">
+                <label>Country</label>
+                <input type="text" name="country" value="{{data.country}}" required>
+            </div>
+            <div class="col">
+                <label>City</label>
+                <input type="text" name="city" value="{{data.city}}" required>
+            </div>
+        </div>
 
-        <label>Enter the city your company is located within.</label>
-        <input type="text" name="city" value="{{data.city}}" required>
-
-        <label>Enter the year your company was founded.</label>
+        <label>Year Founded</label>
         <input type="number" name="year" value="{{data.year}}" required>
+        <span class="help-text">E.g., 2012</span>
+    </fieldset>
 
-        <label>Enter the annual EBITDA of your company's current project.</label>
+    <!-- Financial Info -->
+    <fieldset>
+        <legend>Financials</legend>
+
+        <label>Project EBITDA (Annual)</label>
         <input type="number" name="proj_EBITDA" step="0.01" value="{{data.proj_EBITDA}}" required>
+        <span class="help-text">The annual EBITDA for your current project in USD.</span>
 
-    <label>Enter the annual EBITDA of your company.</label><br>
-    <input type="number" name="company_EBITDA" step="0.01" min="0.01" value="{{data.company_EBITDA}}" required><br>
+        <label>Company EBITDA (Annual)</label>
+        <input type="number" name="company_EBITDA" step="0.01" min="0.01" value="{{data.company_EBITDA}}" required>
+        <span class="help-text">The total annual EBITDA for your company in USD.</span>
 
-        <label>Enter the enterprise value of your company. (USD)</label>
+        <label>Enterprise Value (USD)</label>
         <input type="number" name="value" step="0.01" value="{{data.value}}" required>
 
-        <label>Enter your company's risk appetite (0-1)</label>
+        <label>Risk Appetite (0-1)</label>
         <input type="number" min="0" max="1" name="risk" step="0.01" value="{{data.risk}}" required>
+        <span class="help-text">0 = very low risk tolerance, 1 = very high.</span>
+    </fieldset>
 
-        <input type="submit" value="Submit">
-    </form>
+    <input type="submit" value="Submit">
+</form>
 </body>
 </html>
