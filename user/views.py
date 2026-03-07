@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from .models import Company
 import datetime
-import algorithm
+from . import algorithm
 
 
 def index(request):
@@ -101,4 +101,3 @@ def response(request, company_id):
                    }
     #TODO: call all functions to get and process data
     return render(request, "user/response.html", result_dict)
-

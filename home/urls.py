@@ -3,5 +3,7 @@ from . import views
 
 app_name = "home"
 urlpatterns = [
-    path("", views.index, name="index")
+    path("", views.index, name="index"),
+    path('esg_considerations/', views.esg_considerations, name='esg_considerations'),
+
 ]
