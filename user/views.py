@@ -68,4 +68,3 @@ def response(request, company_id):
                    }
     #TODO: call all functions to get and process data
     return render(request, "user/response.html", result_dict)
-

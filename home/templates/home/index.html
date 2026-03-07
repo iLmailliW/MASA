@@ -5,140 +5,164 @@
 <title>MASA</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Raleway:wght@700&display=swap" rel="stylesheet">
 <style>
-body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    background: #0a0a0a;
-    color: #e0e0e0;
-}
 
-/* HEADER */
-header {
-    position: sticky;
-    top: 0;
-    background: #111;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 5%;
-    z-index: 100;
-    border-bottom: 2px solid rgba(255,255,255,0.2);
-}
-header .logo { font-family: 'Raleway', sans-serif; font-size: 1.8em; color: #a8dadc; font-weight: 700; }
-nav a { margin-left: 25px; text-decoration: none; color: #e0e0e0; font-weight: 500; transition: all 0.3s; }
-nav a:hover { color: #ffd6a5; text-shadow: 0 0 10px #ffd6a5; }
-
-/* SECTION BASE */
-section {
-    padding: 60px 5%;
-    border: none; /* no blocks */
-    margin-bottom: 40px;
-    position: relative;
-}
-
-/* Optional divider */
-section:not(:last-child)::after {
-    content: "";
-    display: block;
-    height: 1px;
-    background: rgba(255,255,255,0.2);
-    margin-top: 40px;
-}
-
-/* HERO */
-.hero {
-    height: 90vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    #esg {
     text-align: center;
-    color: #0a0a0a;
-    background: linear-gradient(135deg,#cfe2ff,#d9fdd3);
-    box-shadow: 0 0 60px rgba(0,255,255,0.2), 0 0 100px rgba(255,0,255,0.1);
-}
-.hero h1 { font-size: 3em; margin-bottom: 15px; }
-.hero p { font-size: 1.2em; max-width: 700px; margin-bottom: 35px; }
-.button {
+    }
+    .button-esg {
     padding: 15px 40px;
-    background: #a8dadc;
+    background: #ffd6a5; /* warm, glowing color */
     color: #0a0a0a;
     border-radius: 40px;
     font-weight: 600;
     text-decoration: none;
-    transition: all 0.3s;
-    box-shadow: 0 0 20px rgba(168,218,220,0.5);
     display: inline-block;
-}
-.button:hover {
-    background: #ffb703;
-    color: #0a0a0a;
-    box-shadow: 0 0 25px rgba(255,183,3,0.7), 0 0 50px rgba(255,183,3,0.4);
-    transform: translateY(-3px);
-}
-
-/* FEATURE, STEP, MEMBER CARDS */
-.feature-grid, .steps, .team-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap: 40px; }
-.feature, .step, .member {
-    background: #111;
-    border-radius: 12px;
-    padding: 25px;
-    border: 1px solid rgba(168,218,220,0.3);
+    box-shadow: 0 0 20px rgba(255,214,165,0.5);
     transition: all 0.3s ease;
-}
-.feature:hover, .step:hover, .member:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 0 30px rgba(168,218,220,0.5), 0 0 50px rgba(255,183,3,0.2);
-}
 
-/* TITLES */
-.feature h3 { color: #a8dadc; margin-bottom: 10px; }
-.step h3 { color: #ffd6a5; margin-bottom: 15px; text-align: center; }
-.member h4 { color: #a8dadc; margin-bottom: 10px; text-align: center; }
+    }
 
-/* SECTION HEADINGS */
-section h2 {
-    color: #a8dadc;
-    margin-bottom: 30px;
-}
+    .button-esg:hover {
+        background: #ffb703; /* brighter hover color */
+        box-shadow: 0 0 25px rgba(255,183,3,0.7), 0 0 50px rgba(255,183,3,0.4);
+        transform: translateY(-3px);
+    }
+    body {
+        margin: 0;
+        font-family: 'Poppins', sans-serif;
+        background: #0a0a0a;
+        color: #e0e0e0;
+    }
 
-/* TEAM GRID - single line */
-.team-grid {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    gap: 20px;
-}
-.team-grid::-webkit-scrollbar { height: 8px; }
-.team-grid::-webkit-scrollbar-thumb { background: #a8dadc; border-radius: 4px; }
+    /* HEADER */
+    header {
+        position: sticky;
+        top: 0;
+        background: #111;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 5%;
+        z-index: 100;
+        border-bottom: 2px solid rgba(255,255,255,0.2);
+    }
+    header .logo { font-family: 'Raleway', sans-serif; font-size: 1.8em; color: #a8dadc; font-weight: 700; }
+    nav a { margin-left: 25px; text-decoration: none; color: #e0e0e0; font-weight: 500; transition: all 0.3s; }
+    nav a:hover { color: #ffd6a5; text-shadow: 0 0 10px #ffd6a5; }
 
-/* CTA */
-.cta { text-align: center; }
-.cta h2 { color: #f1f1f1; margin-bottom: 25px; }
+    /* SECTION BASE */
+    section {
+        padding: 60px 5%;
+        border: none; /* no blocks */
+        margin-bottom: 40px;
+        position: relative;
+    }
 
-/* FOOTER */
-footer { text-align: center; padding: 30px; background: #111; font-size: 0.9em; color: #999; }
+    /* Optional divider */
+    section:not(:last-child)::after {
+        content: "";
+        display: block;
+        height: 1px;
+        background: rgba(255,255,255,0.2);
+        margin-top: 40px;
+    }
 
-/* RESPONSIVE */
-@media(max-width:768px){
-    .hero h1{font-size:2.5em;}
-    .hero p{font-size:1.1em;}
-    .team-grid { flex-wrap: nowrap; gap: 15px; }
-}
+    /* HERO */
+    .hero {
+        height: 90vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: #0a0a0a;
+        background: linear-gradient(135deg,#cfe2ff,#d9fdd3);
+        box-shadow: 0 0 60px rgba(0,255,255,0.2), 0 0 100px rgba(255,0,255,0.1);
+    }
+    .hero h1 { font-size: 3em; margin-bottom: 15px; }
+    .hero p { font-size: 1.2em; max-width: 700px; margin-bottom: 35px; }
+    .button {
+        padding: 15px 40px;
+        background: #a8dadc;
+        color: #0a0a0a;
+        border-radius: 40px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s;
+        box-shadow: 0 0 20px rgba(168,218,220,0.5);
+        display: inline-block;
+    }
+    .button:hover {
+        background: #ffb703;
+        color: #0a0a0a;
+        box-shadow: 0 0 25px rgba(255,183,3,0.7), 0 0 50px rgba(255,183,3,0.4);
+        transform: translateY(-3px);
+    }
+
+    /* FEATURE, STEP, MEMBER CARDS */
+    .feature-grid, .steps, .team-grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(250px,1fr)); gap: 40px; }
+    .feature, .step, .member {
+        background: #111;
+        border-radius: 12px;
+        padding: 25px;
+        border: 1px solid rgba(168,218,220,0.3);
+        transition: all 0.3s ease;
+    }
+    .feature:hover, .step:hover, .member:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 0 30px rgba(168,218,220,0.5), 0 0 50px rgba(255,183,3,0.2);
+    }
+
+    /* TITLES */
+    .feature h3 { color: #a8dadc; margin-bottom: 10px; }
+    .step h3 { color: #ffd6a5; margin-bottom: 15px; text-align: center; }
+    .member h4 { color: #a8dadc; margin-bottom: 10px; text-align: center; }
+
+    /* SECTION HEADINGS */
+    section h2 {
+        color: #a8dadc;
+        margin-bottom: 30px;
+    }
+
+    /* TEAM GRID - single line */
+    .team-grid {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        gap: 20px;
+    }
+    .team-grid::-webkit-scrollbar { height: 8px; }
+    .team-grid::-webkit-scrollbar-thumb { background: #a8dadc; border-radius: 4px; }
+
+    /* CTA */
+    .cta { text-align: center; }
+    .cta h2 { color: #f1f1f1; margin-bottom: 25px; }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 30px; background: #111; font-size: 0.9em; color: #999; }
+
+    /* RESPONSIVE */
+    @media(max-width:768px){
+        .hero h1{font-size:2.5em;}
+        .hero p{font-size:1.1em;}
+        .team-grid { flex-wrap: nowrap; gap: 15px; }
+    }
 </style>
 </head>
 <body>
 
 <header>
-    <div class="logo">MASA</div>
+    <div class="logo">
+        <a href="{% url 'home:index' %}" style="text-decoration: none; color: inherit;">MASA</a>
+    </div>
     <nav>
-        <a href="#hero">Home</a>
+        <a href="{% url 'home:index' %}">Home</a>
         <a href="#features">Features</a>
         <a href="#how">How it Works</a>
         <a href="#team">Team</a>
-        <a href="#esg">ESG</a>
-        <a href="#cta">Get Started</a>
+        <a href="{% url 'home:esg_considerations' %}">ESG</a>
+        <a href="{% url 'user:index' %}">Get Started</a>
     </nav>
 </header>
 
@@ -171,17 +195,16 @@ footer { text-align: center; padding: 30px; background: #111; font-size: 0.9em; 
     <div class="team-grid">
         <div class="member"><h4>Amaan Saad</h4><p>Chief Executive Officer</p></div>
         <div class="member"><h4>Arnab Karmokar</h4><p>Lead Backend Engineer</p></div>
-        <div class="member"><h4>Jonatha Ooi</h4><p>Director of Investment Strategy</p></div>
+        <div class="member"><h4>Jonathan Ooi</h4><p>Director of Investment Strategy</p></div>
         <div class="member"><h4>Violet Ouyang</h4><p>Head of User Experience</p></div>
         <div class="member"><h4>William Li</h4><p>AI Solutions Architect</p></div>
     </div>
 </section>
-
-<section id="esg" class="esg container">
-    <h2>ESG & Sustainability</h2>
-    <p>MASA incorporates environmental, social, and governance considerations into risk assessment, helping mid-market manufacturers make resilient and sustainable decisions.</p>
-</section>
-
+    <section id="esg" class="esg container">
+        <h2>ESG & Sustainability</h2>
+        <p>MASA incorporates environmental, social, and governance considerations into risk assessment, helping mid-market manufacturers make resilient and sustainable decisions.</p>
+        <a href="{% url 'home:esg_considerations' %}" class="button-esg">Read More Here</a>
+    </section>
 <section id="cta" class="cta container">
     <h2>Start Your Risk Assessment</h2>
     <a href="{% url 'user:index' %}" class="button">Get Started</a>

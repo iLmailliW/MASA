@@ -5,61 +5,110 @@
 <title>MASA User Form</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Raleway:wght@700&display=swap" rel="stylesheet">
 <style>
+/* GLOBAL BODY & CONTAINER */
 body {
+    margin: 0;
     font-family: 'Poppins', sans-serif;
     background: #0a0a0a;
-    display: flex;
-    justify-content: center;
-    padding: 20px;
     color: #e0e0e0;
 }
+.container {
+    width: 100%;
+    min-height: 100vh;
+    padding: 20px 5%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-sizing: border-box;
+}
 
-form {
+/* HEADER */
+header {
+    position: sticky;
+    top: 0;
+    width: 100%;
     background: #111;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    z-index: 100;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+}
+header .logo {
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.8em;
+    color: #a8dadc;
+    font-weight: 700;
+}
+header .logo a { text-decoration: none; color: inherit; }
+nav a {
+    margin-left: 25px;
+    text-decoration: none;
+    color: #e0e0e0;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+nav a:hover {
+    color: #ffd6a5;
+    text-shadow: 0 0 10px #ffd6a5;
+}
+
+/* FORM / DASHBOARD STYLING */
+form {
+    background: linear-gradient(145deg, #111111, #1a1a1a);
     padding: 40px 50px;
     border-radius: 15px;
     box-shadow: 0 0 50px rgba(168,218,220,0.3);
-    width: 95%;
-    max-width: 850px;
+    width: 100%;
+    max-width: 800px;
     display: flex;
     flex-direction: column;
     border: 2px solid rgba(168,218,220,0.4);
+    margin-top: 40px;
+    box-sizing: border-box;
 }
 
-h2 {
+/* HEADINGS */
+h1 {
     color: #a8dadc;
-    margin-bottom: 20px;
-    font-size: 1.6em;
-    border-bottom: 1px solid rgba(168,218,220,0.4);
-    padding-bottom: 5px;
+    font-family: 'Raleway', sans-serif;
+    text-align: center;
+    margin-bottom: 30px;
 }
 
+/* FIELDSETS */
 fieldset {
     border: 1px solid rgba(168,218,220,0.4);
-    border-radius: 10px;
-    margin-bottom: 25px;
-    padding: 25px 20px 20px 20px;
-    position: relative;
+    border-radius: 12px;
+    margin-bottom: 40px;
+    padding: 25px 20px;
 }
-
 legend {
     font-weight: 600;
     color: #ffd6a5;
     font-size: 1.2em;
 }
 
+/* LABELS & HELP TEXT */
 label {
-    margin-top: 10px;
+    margin-top: 12px;
     margin-bottom: 4px;
     font-size: 0.95em;
     font-weight: 500;
     display: block;
 }
+.help-text {
+    font-size: 0.8em;
+    color: #b0b0b0;
+    margin-bottom: 10px;
+}
 
+/* INPUT FIELDS */
 input[type="text"], input[type="number"] {
     width: 100%;
     padding: 12px;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     border-radius: 8px;
     border: 1px solid #555;
     background: #1a1a1a;
@@ -68,45 +117,56 @@ input[type="text"], input[type="number"] {
     box-sizing: border-box;
     transition: all 0.3s;
 }
-
 input[type="text"]:focus, input[type="number"]:focus {
     outline: none;
     border-color: #a8dadc;
     box-shadow: 0 0 12px rgba(168,218,220,0.7);
 }
 
-input[type="submit"] {
-    background-color: #a8dadc;
-    color: #0a0a0a;
-    font-family: 'Raleway', sans-serif;
-    font-size: 1em;
-    padding: 15px;
+/* BUTTONS STYLING - SAME HEIGHT, DIFFERENT LENGTHS */
+.button, .back-button {
+    display: inline-block;
+    padding: 20px 50px;     /* same vertical padding = same height */
+    margin: 10px;
     border-radius: 40px;
-    border: none;
-    cursor: pointer;
     font-weight: 600;
-    box-shadow: 0 0 25px rgba(168,218,220,0.5);
-    transition: all 0.3s;
+    text-decoration: none;
+    text-align: center;
+    font-family: 'Raleway', sans-serif;
+    font-size: 1.1em;
+    cursor: pointer;
+    border: none;
+    transition: all 0.3s ease;
 }
 
-input[type="submit"]:hover {
-    background-color: #ffb703;
+/* Submit Button - Longer */
+.button {
+    min-width: 250px;        /* longer width */
+    box-shadow: 0 0 25px rgba(168,218,220,0.5);
+    background-color: #a8dadc;
     color: #0a0a0a;
-    box-shadow: 0 0 30px rgba(255,183,3,0.7);
+}
+.button:hover {
+    background-color: #ffb703;
+    box-shadow: 0 0 30px rgba(255,183,3,0.7), 0 0 50px rgba(255,183,3,0.4);
     transform: translateY(-2px);
 }
 
-.help-text {
-    font-size: 0.8em;
-    color: #b0b0b0;
-    margin-bottom: 10px;
+/* Back Button - Shorter */
+.back-button {
+    min-width: 140px;         /* shorter width */
+    padding: 20px 30px;       /* same vertical padding, shorter horizontal */
+    box-shadow: 0 0 10px rgba(168,218,220,0.3);
+    background-color: #555;   /* muted color */
+    color: #e0e0e0;
+}
+.back-button:hover {
+    background-color: #777;
+    box-shadow: 0 0 15px rgba(255,183,3,0.4);
+    transform: translateY(-1px);
 }
 
-section {
-    margin-bottom: 25px;
-}
-
-/* Flex for two-column fields */
+/* ROW FLEX */
 .row {
     display: flex;
     flex-wrap: wrap;
@@ -116,15 +176,48 @@ section {
     flex: 1 1 45%;
     min-width: 200px;
 }
+
+/* ERROR MESSAGE */
+.error {
+    color: #ff6b6b;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+    form { width: 90%; }
+}
+@media(max-width:768px){
+    .row .col { flex: 1 1 100%; }
+    form { padding: 30px 20px; margin-top: 30px; }
+    .button, .back-button { width: 100%; margin: 10px 0; padding: 20px; }
+}
 </style>
 </head>
 <body>
-    <form action="{% url 'user:index' %}" method="post">
-        {% csrf_token %}
-        <legend><h1>{{ question.question_text }}</h1></legend>
-        {% if error_message %}<p class="error">{{ error_message }}</p>{% endif %}
 
-    <!-- Company Info -->
+<div class="container">
+<header>
+    <div class="logo">
+        <a href="{% url 'home:index' %}">MASA</a>
+    </div>
+    <nav>
+        <a href="{% url 'home:index' %}">Home</a>
+        <a href="#features">Features</a>
+        <a href="#how">How it Works</a>
+        <a href="#team">Team</a>
+        <a href="{% url 'home:esg_considerations' %}">ESG</a>
+        <a href="{% url 'user:index' %}">Get Started</a>
+    </nav>
+</header>
+
+<form action="{% url 'user:index' %}" method="post">
+    {% csrf_token %}
+    <h1>{{ question.question_text }}</h1>
+    {% if error_message %}<p class="error">{{ error_message }}</p>{% endif %}
+
+    <!-- COMPANY INFO -->
     <fieldset>
         <legend>Company Info</legend>
 
@@ -152,7 +245,7 @@ section {
         <span class="help-text">E.g., 2012</span>
     </fieldset>
 
-    <!-- Financial Info -->
+    <!-- FINANCIAL INFO -->
     <fieldset>
         <legend>Financials</legend>
 
@@ -172,30 +265,13 @@ section {
         <span class="help-text">0 = very low risk tolerance, 1 = very high.</span>
     </fieldset>
 
-        <h2>Supply Chain Metrics</h2>
+    <!-- BUTTONS INLINE -->
+    <div style="text-align: center; margin-top: 30px;">
+        <input type="submit" value="Submit" class="button">
+        <a href="{% url 'home:index' %}" class="back-button">Back</a>
+    </div>
+</form>
+</div>
 
-        <label>On-Hand Inventory</label>
-        <input type="number" name="on_hand" value="{{data.on_hand}}" required>
-
-        <label>Safety Stock Levels</label>
-        <input type="number" name="safety_stock" value="{{data.safety_stock}}" required>
-
-        <label>Reorder Points</label>
-        <input type="number" name="reorder_points" value="{{data.reorder_points}}" required>
-
-        <label>Order Backlog</label>
-        <input type="number" name="order_backlog" value="{{data.order_backlog}}" required>
-
-        <label>Production Schedule</label>
-        <input type="number" name="production_schedule" value="{{data.production_schedule}}" required>
-
-        <label>Supplier Concentration</label>
-        <input type="number" name="supplier_concentration" value="{{data.supplier_concentration}}" required>
-
-        <label>Lead-Time Sensitivity</label>
-        <input type="number" name="lead_time_sensitivity" value="{{data.lead_time_sensitivity}}" required>
-
-        <input type="submit" value="Submit">
-    </form>
 </body>
 </html>
