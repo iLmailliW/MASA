@@ -4,6 +4,7 @@ from django.http import HttpResponseRedirect, HttpResponse
 from .models import Company
 import datetime
 import algorithm
+import data.ai_process as ai
 
 
 def index(request):
@@ -30,25 +31,24 @@ def index(request):
 # This method renders the results page. It has to call any function necessary to get the result
 def response(request, company_id):
     company = get_object_or_404(Company, pk=company_id)
-    industry_max_value = 0.0  #TODO: dependent on William Li (WL)
+    industry_max_value = ai.get_largest_enterprise_value()
     risk_appetite = algorithm.calc_risk_appetite(company_value=company.value,
                                                  industry_max_value=industry_max_value,
                                                  project_ebitda=company.proj_ebitda,
                                                  company_ebitda=company.company_ebitda)
-    port_congestion = 0.0  # TODO: WL
+    port_congestion = ai.get_port_progression_index()
     logistics_iot = port_congestion
-    credit_risk_scores = 0.0  # TODO: WL
-    payment_performance = 0.0  # TODO: WL
-    ownership = 0.0  # TODO: WL
+    credit_risk_scores = ai.get_credit_risk_score()
+    payment_performance_ownership_activity = ai.get_payment_performance_ownership_activity()
+    payment_performance = payment_performance_ownership_activity["Payment Performance"]
+    ownership = payment_performance_ownership_activity["Ownership Activity"]
     supplier_health = algorithm.calc_supplier_health(credit_risk_scores=credit_risk_scores,
                                                      payment_performance=payment_performance,
                                                      ownership=ownership)
-    trade_policy = 0.0  # TODO: WL
-    geopolitical_conflict = 0.0  # TODO: WL
-    commodity_volatility = 0.0  # TODO: WL
+    trade_policy = ai.get_tarrifs_news()
+    geopolitical_conflict = ai.get_geopolitical_data()
     news_geopolitics = algorithm.calc_news_geopolitics(trade_policy=trade_policy,
-                                                       geopolitical_conflict=geopolitical_conflict,
-                                                       commodity_volatility=commodity_volatility)
+                                                       geopolitical_conflict=geopolitical_conflict)
     risk_score = algorithm.calc_risk_score(logistics_iot=logistics_iot,
                                            supplier_health=supplier_health,
                                            news_geopolitics=news_geopolitics)
