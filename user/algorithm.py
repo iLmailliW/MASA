@@ -132,7 +132,7 @@ def identify_severe_risks(scores: dict[str, float]) -> list[str]:
         - scores is a dictionary mapping strings to floats between 0.0 and 1.0, with the same format as the output of
           generate_all_sub_sub_risk_scores().
     """
-    severe_risks = [key for key, value in scores.items() if value > 0.5]
+    severe_risks = [key for key, value in scores.items() if value > 0.2]
     if not severe_risks:
         sorted_scores = sorted(scores.items(), key=lambda category: category[1], reverse=True)
         severe_risk_category_and_scores = sorted_scores[:3]

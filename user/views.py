@@ -20,7 +20,9 @@ def index(request):
             company_ebitda=request.POST.get("company_EBITDA"),
             value=request.POST.get("value"),
             risk=request.POST.get("risk"),
-            time=datetime.now()
+            time=datetime.now(),
+            cik=request.POST.get("cik"),
+            symbol=request.POST.get("symbol")
         )
         # save data here if needed
         return HttpResponseRedirect(reverse('user:response', args=(new_company.id,)))
@@ -42,53 +44,54 @@ def response(request, company_id):
                                                  industry_max_value=industry_max_value,
                                                  project_ebitda=company.proj_ebitda,
                                                  company_ebitda=company.company_ebitda)
-    port_congestion = get_port_congestion_index()["index"]
+    port_congestion = get_port_congestion_index()
     logistics_iot = port_congestion
-    credit_risk_scores = get_credit_risk_score()["index"]
+    credit_risk_scores = get_credit_risk_score()
     payment_performance_ownership_activity = get_payment_performance_ownership_activity()
     payment_performance = payment_performance_ownership_activity["index"]
     ownership = payment_performance_ownership_activity["index2"]
-    supplier_health = calc_supplier_health(credit_risk_scores=credit_risk_scores,
+    supplier_health = calc_supplier_health(credit_risk_scores=credit_risk_scores["index"],
                                                      payment_performance=payment_performance,
                                                      ownership=ownership)
-    trade_policy = get_tarrifs_news()["index"]
-    geopolitical_conflict = get_geopolitical_data()["index"]
-    news_geopolitics = calc_news_geopolitics(trade_policy=trade_policy,
-                                                       geopolitical_conflict=geopolitical_conflict)
-    risk_score = calc_risk_score(logistics_iot=logistics_iot,
+    trade_policy = get_tarrifs_news()
+    geopolitical_conflict = get_geopolitical_data()
+    news_geopolitics = calc_news_geopolitics(trade_policy=trade_policy["index"],
+                                                       geopolitical_conflict=geopolitical_conflict["index"])
+    risk_score = calc_risk_score(logistics_iot=logistics_iot["index"],
                                            supplier_health=supplier_health,
                                            news_geopolitics=news_geopolitics)
     assessment = risk_score_assessment(risk_score, risk_appetite)
-    sub_sub_risk_scores = generate_all_sub_sub_risk_scores(port_congestion=port_congestion,
-                                                           credit_risk_scores=credit_risk_scores,
+    sub_sub_risk_scores = generate_all_sub_sub_risk_scores(port_congestion=port_congestion["index"],
+                                                           credit_risk_scores=credit_risk_scores["index"],
                                                            payment_performance=payment_performance,
                                                            ownership=ownership,
-                                                           trade_policy=trade_policy,
-                                                           geopolitical_conflict=geopolitical_conflict)
+                                                           trade_policy=trade_policy["index"],
+                                                           geopolitical_conflict=geopolitical_conflict["index"])
     severe_risks = identify_severe_risks(sub_sub_risk_scores)
     analysis = []
     if "Port Congestion Index" in severe_risks:
-        analysis.append(mitigation_port_congestion())
+        analysis.append(mitigation_port_congestion(sub_sub_risk_scores["Port Congestion Index"], str(port_congestion["data"])))
     if "Credit / Risk Scores" in severe_risks:
-        analysis.append(mitigation_credit_risk())
+        analysis.append(mitigation_credit_risk(sub_sub_risk_scores["Port Congestion Index"], str(credit_risk_scores["data"])))
     if "Payment Performance" in severe_risks:
-        analysis.append(mitigation_payment_performance())
+        analysis.append(mitigation_payment_performance(sub_sub_risk_scores["Port Congestion Index"], str(payment_performance_ownership_activity["data"])))
     if "Ownership Activity" in severe_risks:
-        analysis.append(mitigation_ownership_activity())
+        analysis.append(mitigation_ownership_activity(sub_sub_risk_scores["Port Congestion Index"], str(payment_performance_ownership_activity["data"])))
     if "Trade Policy & Tariffs" in severe_risks:
-        analysis.append(mitigation_trade_policy())
+        analysis.append(mitigation_trade_policy(sub_sub_risk_scores["Port Congestion Index"], str(trade_policy["data"])))
     if "Geopolitical Conflict" in severe_risks:
-        analysis.append(mitigation_geopolitical_conflict())
-
-
+        analysis.append(mitigation_geopolitical_conflict(sub_sub_risk_scores["Port Congestion Index"], str(geopolitical_conflict["data"])))
 
 
     result_dict = {"Company Name": company.name,
                    "Company Industry": company.industry,
-                   "Risk Appetite": risk_appetite,
-                   "Risk Score": risk_score,
+                   "Risk_Appetite": risk_appetite,
+                   "Risk_Score": risk_score,
                    "Assessment": assessment, # low-high risk
-                   "Severe Risk Categories": severe_risks, # template name
+                   "Severe_Risk_Categories": severe_risks, # template name
                    "Analysis": analysis # mitigation strategies
                    }
+
+    print(result_dict)
+
     return render(request, "user/response.html", result_dict)

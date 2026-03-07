@@ -1,24 +1,68 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>MASA</title>
-</head>
-<body>
-<div class="mitigation-strategies">
-    <h3>Recommended Mitigation Strategies</h3>
+<div class="container mt-5">
+    <div class="card shadow-sm border-0 mb-4">
+        <div class="card-body bg-light">
+            <h1 class="display-5 text-primary">{{ Company_Name }}</h1>
+            <p class="lead text-muted">{{ Company_Industry }} | Risk Appetite: <strong>{{ Risk_Appetite }}</strong></p>
+        </div>
+    </div>
 
-    {% if Analysis %}
-        <ul class="list-group">
-            {% for strategy in Analysis %}
-                <li class="list-group-item">
-                    {{ strategy|linebreaksbr }}
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p class="text-muted">No specific mitigation strategies identified for this risk profile.</p>
-    {% endif %}
+    <div class="row">
+        <div class="col-md-4">
+            <div class="card text-center h-100 shadow-sm">
+                <div class="card-header bg-dark text-white">Risk Summary</div>
+                <div class="card-body">
+                    <h2 class="display-3 fw-bold">{{ Risk_Score }}</h2>
+                    <p class="text-uppercase fw-bold
+                        {% if result_dict.Assessment == 'High Risk' %}text-danger
+                        {% elif result_dict.Assessment == 'Medium Risk' %}text-warning
+                        {% else %}text-success{% endif %}">
+                        {{ Assessment }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card h-100 shadow-sm border-danger">
+                <div class="card-header bg-danger text-white">Severe Risk Categories</div>
+                <div class="card-body">
+                    {% if Severe_Risk_Categories %}
+                        <div class="d-flex flex-wrap gap-2">
+                            {% for risk in Severe_Risk_Categories %}
+                                <span class="badge rounded-pill bg-outline-danger border border-danger text-danger p-2">
+                                    {{ risk }}<br>
+                                </span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-muted italic">No severe risks identified.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    Mitigation Strategy & Analysis
+                </div>
+                <div class="card-body">
+                    {% if Analysis %}
+                        <ul class="list-group list-group-flush">
+                            {% for strategy in Analysis %}
+                                <li class="list-group-item d-flex align-items-start">
+                                    <span class="badge bg-primary me-3 mt-1">{{ forloop.counter }}</span>
+                                    <div>{{ strategy|linebreaksbr }}</div>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">No analysis available for the current selection.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</body>
-</html>

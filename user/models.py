@@ -1,5 +1,5 @@
 from django.db import models
-from datetime import datetime
+from datetime import datetime, date
 
 
 class Company(models.Model):
@@ -34,7 +34,9 @@ class Company(models.Model):
     company_ebitda = models.FloatField("annual company EBITDA")
     value = models.FloatField()
     risk = models.FloatField()
-    time = models.DateTimeField("time uploaded", default=datetime.now())
+    time = models.DateField("time uploaded", default=date.today())
+    cik = models.CharField(max_length=100, default="")
+    symbol = models.CharField(max_length=100, default="")
 
     def __str__(self):
         data = {

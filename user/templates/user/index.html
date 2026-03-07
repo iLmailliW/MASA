@@ -263,6 +263,12 @@ input[type="text"]:focus, input[type="number"]:focus {
         <label>Risk Appetite (0-1)</label>
         <input type="number" min="0" max="1" name="risk" step="0.01" value="{{data.risk}}" required>
         <span class="help-text">0 = very low risk tolerance, 1 = very high.</span>
+
+        <label>CIK</label>
+        <input type="text" name="cik" value="{{data.cik}}" required>
+
+        <label>Symbol</label>
+        <input type="text" name="symbol" value="{{data.symbol}}" required>
     </fieldset>
 
     <!-- BUTTONS INLINE -->
