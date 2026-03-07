@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MASA | Corporate Vision</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&family=Raleway:wght@700&display=swap" rel="stylesheet">
+
+<style>
+
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:#0a0a0a;
+    color:#e0e0e0;
+}
+
+/* HEADER */
+header{
+    position:sticky;
+    top:0;
+    background:#111;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 5%;
+    z-index:100;
+    border-bottom:2px solid rgba(255,255,255,0.2);
+}
+
+header .logo{
+    font-family:'Raleway',sans-serif;
+    font-size:1.8em;
+    color:#a8dadc;
+    font-weight:700;
+}
+
+nav a{
+    margin-left:25px;
+    text-decoration:none;
+    color:#e0e0e0;
+    font-weight:500;
+    transition:all .3s;
+}
+
+nav a:hover{
+    color:#ffd6a5;
+    text-shadow:0 0 10px #ffd6a5;
+}
+
+/* SECTION */
+
+section{
+    padding:70px 5%;
+}
+
+section h2{
+    color:#a8dadc;
+    margin-bottom:35px;
+    text-align:center;
+}
+
+/* GRID */
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+    gap:35px;
+}
+
+/* CARDS */
+
+.card{
+    background:#111;
+    border-radius:12px;
+    padding:25px;
+    border:1px solid rgba(168,218,220,0.3);
+    transition:.3s;
+}
+
+.card:hover{
+    transform:translateY(-5px);
+    box-shadow:0 0 30px rgba(168,218,220,0.5),
+               0 0 50px rgba(255,183,3,0.2);
+}
+
+.card h3{
+    color:#ffd6a5;
+    margin-bottom:10px;
+}
+
+/* MISSION BLOCK */
+
+.mission{
+    max-width:900px;
+    margin:60px auto;
+    text-align:center;
+    line-height:1.7;
+    font-size:1.1em;
+}
+
+footer{
+    text-align:center;
+    padding:30px;
+    background:#111;
+    color:#999;
+}
+
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="logo">
+        <a href="{% url 'home:index' %}" style="text-decoration:none;color:inherit;">MASA</a>
+    </div>
+
+    <nav>
+        <a href="{% url 'home:index' %}">Home</a>
+        <a href="{% url 'home:index' %}#features">Features</a>
+        <a href="{% url 'home:index' %}#how">How it Works</a>
+        <a href="{% url 'home:index' %}#team">Team</a>
+        <a href="{% url 'home:corporate_vision' %}">Corporate Vision</a>
+        <a href="{% url 'home:esg_considerations' %}">ESG</a>
+        <a href="{% url 'user:index' %}">Get Started</a>
+    </nav>
+</header>
+
+
+<section>
+
+<h2>Corporate Vision</h2>
+
+<div class="grid">
+
+<div class="card">
+<h3>Our Core Values</h3>
+<p>
+Transparency, efficiency, security, and reliability guide the design of MASA and the decisions we make as a company.
+</p>
+</div>
+
+<div class="card">
+<h3>Commitment to ESG</h3>
+<p>
+We are committed to diversity and inclusion, ethical business practices with stakeholders, and protecting the planet by reducing emissions and preserving biodiversity.
+</p>
+</div>
+
+<div class="card">
+<h3>Strategic Goals</h3>
+<p>
+Industry leadership, platform adoption, autonomous supply chains, and long-term data network effects that strengthen operational intelligence.
+</p>
+</div>
+
+</div>
+
+<div class="mission">
+
+<h3 style="color:#ffd6a5;margin-bottom:15px;">Mission Statement</h3>
+
+<p>
+We aim to revolutionize supply chain infrastructure by integrating artificial intelligence into daily operating procedures,
+automating risk identification and potential mitigations so manufacturers can anticipate disruption and act decisively.
+</p>
+
+</div>
+
+</section>
+
+
+<footer>
+<p>MASA — Midmarket Autonomous Servitization Action</p>
+</footer>
+
+</body>
+</html>
