@@ -68,4 +68,3 @@ def response(request, company_id):
                    }
 
     return render(request, "user/response.html", result_dict)
-

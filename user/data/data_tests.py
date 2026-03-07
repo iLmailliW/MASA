@@ -28,6 +28,7 @@ def test_search_gdelt(keywords=("hurricane", "typhoon", "cyclone"),
 def test_search_portwatch(days_back=30):
     return data.search_portwatch(days_back=days_back)
 
+
 def test_search_edgar():
     data.search_edgar_financials(
         cik="0001706431",
@@ -35,8 +36,3 @@ def test_search_edgar():
         output_file="vir_financials.csv",  # optional
     )
 
-def test_search_fred():
-    data.search_fred(api_key=os.getenv("FRED_API_KEY"),
-                     series_id=["DCOILWTICO", "GOLDAMGBD228NLBM", "DHHNGSP"],
-                     start_date="2025-01-01",
-                     frequency="w")
