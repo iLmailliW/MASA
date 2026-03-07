@@ -35,13 +35,6 @@ class Company(models.Model):
     value = models.FloatField()
     risk = models.FloatField()
     time = models.DateTimeField("time uploaded", default=datetime.now())
-    on_hand = models.IntegerField("On-Hand Inventory")
-    safety_stock = models.IntegerField("Safety Stock Levels")
-    reorder_points = models.IntegerField("Reorder Points")
-    order_backlog = models.IntegerField("Order Backlog")
-    production_schedule = models.IntegerField("Production Schedule")
-    supplier_concentration = models.IntegerField("Supplier Concentration")
-    lead_time_sensitivity = models.IntegerField("Lead-Time Sensitivity")
 
     def __str__(self):
         data = {
@@ -54,14 +47,7 @@ class Company(models.Model):
             "company EBITDA": self.company_ebitda,
             "value": self.value,
             "risk": self.risk,
-            "time": self.time,
-            "On-Hand Inventory": self.on_hand,
-            "Safety Stock Levels": self.safety_stock,
-            "Reorder Points": self.reorder_points,
-            "Order Backlog": self.order_backlog,
-            "Production Schedule": self.production_schedule,
-            "Supplier Concentration": self.supplier_concentration,
-            "Lead-Time Sensitivity": self.order_backlog
+            "time": self.time
         }
         return "ID: " + str(self.id) + ", Uploaded: " + str(data["time"])
 

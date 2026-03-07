@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MASA ESG Considerations</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&family=Raleway:wght@700&display=swap" rel="stylesheet">
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: #0a0a0a;
+    color: #e0e0e0;
+}
+
+/* HEADER */
+header {
+    position: sticky;
+    top: 0;
+    background: #111;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 5%;
+    z-index: 100;
+    border-bottom: 2px solid rgba(255,255,255,0.2);
+}
+header .logo { font-family: 'Raleway', sans-serif; font-size: 1.8em; color: #a8dadc; font-weight: 700; }
+nav a { margin-left: 25px; text-decoration: none; color: #e0e0e0; font-weight: 500; transition: all 0.3s; }
+nav a:hover { color: #ffd6a5; text-shadow: 0 0 10px #ffd6a5; }
+
+/* SECTION BASE */
+section {
+    padding: 50px 5%;
+    border: none; /* no blocks */
+    margin-bottom: 40px;
+    position: relative;
+}
+
+/* Optional divider */
+section:not(:last-child)::after {
+    content: "";
+    display: block;
+    height: 1px;
+    background: rgba(255,255,255,0.2);
+    margin-top: 40px;
+}
+
+/* HEADINGS */
+h1, h2 {
+    color: #a8dadc;
+}
+h1 { font-size: 2.8em; margin-bottom: 15px; }
+h2 { font-size: 1.8em; margin-bottom: 20px; }
+
+/* TEXT */
+p {
+    font-size: 1em;
+    line-height: 1.6em;
+    color: #e0e0e0;
+    margin-bottom: 20px;
+}
+
+/* BUTTON LINK */
+.button-link {
+    display: inline-block;
+    padding: 12px 28px;
+    background-color: #a8dadc;
+    color: #0a0a0a;
+    text-decoration: none;
+    border-radius: 40px;
+    font-family: 'Raleway', sans-serif;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 20px rgba(168,218,220,0.5);
+}
+.button-link:hover {
+    background-color: #ffb703;
+    box-shadow: 0 0 25px rgba(255,183,3,0.7), 0 0 50px rgba(255,183,3,0.4);
+    transform: translateY(-3px);
+}
+
+/* LIST NUMBERS */
+.esg-point {
+    margin-bottom: 30px;
+}
+.esg-point h3 {
+    color: #ffd6a5;
+    margin-bottom: 10px;
+    font-size: 1.2em;
+}
+
+/* FOOTER */
+footer { text-align: center; padding: 30px; background: #111; font-size: 0.9em; color: #999; }
+</style>
+</head>
+<body>
+
+
+<header>
+    <div class="logo">
+        <a href="{% url 'home:index' %}" style="text-decoration: none; color: inherit;">MASA</a>
+    </div>
+    <nav>
+        <a href="{% url 'home:index' %}">Home</a>
+        <a href="#features">Features</a>
+        <a href="#how">How it Works</a>
+        <a href="#team">Team</a>
+        <a href="{% url 'home:esg_considerations' %}">ESG</a>
+        <a href="{% url 'user:index' %}">Get Started</a>
+    </nav>
+</header>
+
+<section id="esg" class="container">
+    <h1>ESG & Sustainability Considerations</h1>
+
+    <div class="esg-point">
+        <h3>I. Our Commitment to Organizational Governance</h3>
+        <p>At MASA, we believe that change begins from within, and only then can we achieve our mission to improve youth financial literacy. Therefore, we are committed to organizational transparency and accountability, holding our leadership and the entire MASA team to high ethical and professional standards, ensuring that all decisions are made in alignment with our mission and values.</p>
+    </div>
+
+    <div class="esg-point">
+        <h3>II. Our Commitment to Human Rights</h3>
+        <p>We are a fair and equal organization. We are determined to build a safe learning and working environment, guaranteeing all members of the MASA community (including but not limited to the leadership, mentors, or students) fair and equal treatment and opportunities regardless of race, national or ethnic origin, colour, religion, age, sex, sexual orientation, gender identity or expression, marital status, family status, genetic characteristics, disability, or any other status.</p>
+    </div>
+
+    <div class="esg-point">
+        <h3>III. Employee Well-being</h3>
+        <p>At MASA, we value our employees and their contributions to the mission of improving financial literacy. We care about their health, safety, and education, making it our priority to create a welcoming and respectful work environment for them, providing workplace and mental health support at all times. We promote work-life balance and open communication to support the well-being of the team while maintaining high standards in our work.</p>
+    </div>
+
+    <div class="esg-point">
+        <h3>IV. Our Commitment to the Environment</h3>
+        <p>At MASA, we strongly believe that a healthy environment is the key to societal success and growth. We are committed to promoting sustainable practices that protect natural habitats and the environment, starting with reducing human pollution and waste into the environment.</p>
+    </div>
+
+    <div class="esg-point">
+        <h3>V. Our Commitment to Fair Operating Practices</h3>
+        <p>Our core mission is to deliver unbiased and fact-based information to resolve and predict future risks. With that said, we are committed to designing an original system with absolute veracity and impartiality, free from political and other influences, while conducting ethically and transparently with customers, employees, investors, competitors, and all other stakeholders.</p>
+    </div>
+
+    <div class="esg-point">
+        <h3>VI. Our Commitment to Consumer Rights</h3>
+        <p>Through MASA, we aim to provide accurate risk predictions and mitigations from collected data, anywhere, and anytime. We maintain transparency in our partnerships, staying free from commercial biases that may mislead the consumer, prioritizing helping smaller companies achieve stability above all. We ensure the privacy and security of our stakeholders' data, which is not shared anywhere without permission.</p>
+    </div>
+
+    <div class="esg-point">
+        <h3>VII. Our Commitment to Community Involvement and Development</h3>
+        <p>Our end goal is to automate all, if not most, supply-chain procedures. We are committed to raising the standards of supply-chain operations globally, allowing all companies regardless of size to implement effective risk mitigation strategies, creating long-term development in communities.</p>
+    </div>
+
+    <a href="{% url 'home:index' %}" class="button-link">Back to Home</a>
+</section>
+
+<footer>
+    <p>MASA — Manufacturing Autonomous Stability Agent</p>
+</footer>
+
+</body>
+</html>
