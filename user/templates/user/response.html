@@ -1,74 +1,351 @@
-<div class="container mt-5">
-    <div class="card shadow-sm border-0 mb-4">
-        <div class="card-body bg-light">
-            <h1 class="display-5 text-primary">Name: {{ Company_Name }}</h1>
-            <p class="lead text-muted">Industry: {{ Company_Industry }}</strong></p>
-        </div>
-    </div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>MASA Risk Analysis</title>
 
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card text-center h-100 shadow-sm">
-                <div class="card-header bg-dark text-white">Risk Summary</div>
-                <div class="card-body">
-                    <h2 class="display-3 fw-bold">{{ Risk_Score }}</h2>
-                    <p class="text-uppercase fw-bold
-                        {% if result_dict.Assessment == 'High Risk' %}text-danger
-                        {% elif result_dict.Assessment == 'Medium Risk' %}text-warning
-                        {% else %}text-success{% endif %}">
-                        {{ Assessment }}
-                    </p>
-                </div>
-            </div>
-        </div>
+<link href="https://fonts.googleapis.com/css2?family=Poppins&family=Raleway:wght@700&display=swap" rel="stylesheet">
 
-        <div class="col-md-8">
-            <div class="card h-100 shadow-sm border-danger">
-                <div class="card-header bg-danger text-white">Severe Risk Categories</div>
-                <div class="card-body">
-                    {% if Severe_Risk_Categories %}
-                        <div class="d-flex flex-wrap gap-2">
-                            {% for risk in Severe_Risk_Categories %}
-                                <span class="badge rounded-pill bg-outline-danger border border-danger text-danger p-2">
-                                    {{ risk }}<br>
-                                </span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        <p class="text-muted italic">No severe risks identified.</p>
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </div>
+<style>
 
-    <div class="row mt-4">
-        <div class="col-12">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    Mitigation Strategy & Analysis
-                </div>
-                <div class="card-body">
-                    {% if Analysis %}
-                        <ul class="list-group list-group-flush">
-                            {% for strategy in Analysis %}
-                                <li class="list-group-item d-flex align-items-start">
-                                    <span class="badge bg-primary me-3 mt-1">{{ forloop.counter }}</span>
-                                    <div>{{ strategy|linebreaksbr }}</div>
-                                </li>
-                            {% endfor %}
-                        </ul>
-                    {% else %}
-                        <p class="text-muted">No analysis available for the current selection.</p>
-                    {% endif %}
+/* GLOBAL */
+body{
+    margin:0;
+    font-family:'Poppins',sans-serif;
+    background:#0a0a0a;
+    color:#e0e0e0;
+}
+
+.container{
+    width:100%;
+    min-height:100vh;
+    padding:20px 5%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    box-sizing:border-box;
+}
+
+/* HEADER (exact style from form page) */
+
+header{
+    position:sticky;
+    top:0;
+    width:100%;
+    background:#111;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 5%;
+    z-index:100;
+    border-bottom:2px solid rgba(255,255,255,0.2);
+}
+
+header .logo{
+    font-family:'Raleway',sans-serif;
+    font-size:1.8em;
+    color:#a8dadc;
+    font-weight:700;
+}
+
+header .logo a{
+    text-decoration:none;
+    color:inherit;
+}
+
+nav a{
+    margin-left:25px;
+    text-decoration:none;
+    color:#e0e0e0;
+    font-weight:500;
+    transition:all 0.3s;
+}
+
+nav a:hover{
+    color:#ffd6a5;
+    text-shadow:0 0 10px #ffd6a5;
+}
 
 
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="analysis-text">
-    {{ result_dict.Analysis_String|linebreaks }}
-        {{Action_Plan}}
-    </div>
+/* DASHBOARD PANEL (same style as form) */
+
+.dashboard{
+    background:linear-gradient(145deg,#111111,#1a1a1a);
+    padding:40px 50px;
+    border-radius:15px;
+    box-shadow:0 0 50px rgba(168,218,220,0.3);
+    width:100%;
+    max-width:900px;
+    display:flex;
+    flex-direction:column;
+    border:2px solid rgba(168,218,220,0.4);
+    margin-top:40px;
+    box-sizing:border-box;
+}
+
+/* HEADINGS */
+
+h1{
+    color:#a8dadc;
+    font-family:'Raleway',sans-serif;
+    text-align:center;
+    margin-bottom:10px;
+}
+
+h2{
+    font-family:'Raleway',sans-serif;
+    color:#ffd6a5;
+}
+
+/* COMPANY INFO */
+
+.company-info{
+    text-align:center;
+    margin-bottom:30px;
+    font-size:1.05em;
+    color:#cfcfcf;
+}
+
+/* SECTION BOX */
+
+.section{
+    border:1px solid rgba(168,218,220,0.4);
+    border-radius:12px;
+    padding:25px 20px;
+    margin-bottom:30px;
+}
+
+/* RISK SCORE */
+
+.risk-score{
+    font-size:4rem;
+    font-weight:700;
+    text-align:center;
+    margin-top:10px;
+}
+
+.risk-high{ color:#ff6b6b; }
+.risk-medium{ color:#ffb703; }
+.risk-low{ color:#90dbf4; }
+
+/* RISK TAGS */
+
+.risk-tags{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-top:15px;
+}
+
+.tag{
+    border:1px solid #ff6b6b;
+    color:#ff6b6b;
+    padding:6px 12px;
+    border-radius:20px;
+    font-size:0.85em;
+}
+
+/* LIST */
+
+.strategy-list{
+    margin-top:15px;
+}
+
+.strategy{
+    padding:12px;
+    border-bottom:1px solid rgba(255,255,255,0.1);
+}
+
+/* ANALYSIS TEXT */
+
+.analysis{
+    line-height:1.6;
+    font-size:0.95em;
+}
+
+/* BUTTON */
+
+.back-button{
+    display:inline-block;
+    padding:20px 30px;
+    border-radius:40px;
+    font-weight:600;
+    text-decoration:none;
+    font-family:'Raleway',sans-serif;
+    background:#555;
+    color:#e0e0e0;
+    margin-top:20px;
+    transition:all 0.3s;
+}
+
+.back-button:hover{
+    background:#777;
+    box-shadow:0 0 15px rgba(255,183,3,0.4);
+}
+
+/* RESPONSIVE */
+
+@media(max-width:768px){
+
+.dashboard{
+padding:30px 20px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<header>
+
+<div class="logo">
+<a href="{% url 'home:index' %}">MASA</a>
 </div>
+
+<nav>
+<a href="{% url 'home:index' %}">Home</a>
+<a href="#features">Features</a>
+<a href="#how">How it Works</a>
+<a href="#team">Team</a>
+<a href="{% url 'home:esg_considerations' %}">ESG</a>
+<a href="{% url 'user:index' %}">Get Started</a>
+</nav>
+
+</header>
+
+
+
+<div class="dashboard">
+
+<h1>Risk Assessment Result</h1>
+
+<div class="company-info">
+<strong>{{ Company_Name }}</strong><br>
+Industry: {{ Company_Industry }}
+</div>
+
+
+<!-- RISK SUMMARY -->
+
+<div class="section">
+
+<h2>Risk Summary</h2>
+
+<div class="risk-score
+{% if result_dict.Assessment == 'High Risk' %}risk-high
+{% elif result_dict.Assessment == 'Medium Risk' %}risk-medium
+{% else %}risk-low
+{% endif %}">
+
+{{ Risk_Score }}
+
+</div>
+
+<p style="text-align:center;font-weight:600;">
+{{ Assessment }}
+</p>
+
+</div>
+
+
+
+<!-- SEVERE RISK CATEGORIES -->
+
+<div class="section">
+
+<h2>Severe Risk Categories</h2>
+
+{% if Severe_Risk_Categories %}
+
+<div class="risk-tags">
+
+{% for risk in Severe_Risk_Categories %}
+
+<div class="tag">
+{{ risk }}
+</div>
+
+{% endfor %}
+
+</div>
+
+{% else %}
+
+<p>No severe risks identified.</p>
+
+{% endif %}
+
+</div>
+
+
+
+<!-- MITIGATION STRATEGY -->
+
+<div class="section">
+
+<h2>Mitigation Strategy</h2>
+
+{% if Analysis %}
+
+<div class="strategy-list">
+
+{% for strategy in Analysis %}
+
+<div class="strategy">
+<strong>{{ forloop.counter }}.</strong> {{ strategy|linebreaksbr }}
+</div>
+
+{% endfor %}
+
+</div>
+
+{% else %}
+
+<p>No mitigation strategies available.</p>
+
+{% endif %}
+
+</div>
+
+
+
+<!-- DETAILED ANALYSIS -->
+
+<div class="section">
+
+<h2>Detailed Risk Explanation</h2>
+
+<div class="analysis">
+
+{{ result_dict.Analysis_String|linebreaks }}
+
+{% if Action_Plan %}
+
+<br><br>
+
+<strong>Recommended Action Plan</strong><br>
+
+{{ Action_Plan|linebreaks }}
+
+{% endif %}
+
+</div>
+
+</div>
+
+
+<div style="text-align:center;">
+<a href="{% url 'user:index' %}" class="back-button">New Assessment</a>
+</div>
+
+
+</div>
+
+</div>
+
+</body>
+</html>
