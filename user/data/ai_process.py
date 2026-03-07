@@ -1,11 +1,10 @@
-import datetime
+from datetime import datetime, date, timedelta
 
 from google import genai
 from dotenv import load_dotenv
-import data
 import os
 
-from user.data.data import search_credit_risk, search_edgar_financials, search_portwatch
+from user.data.data import *
 
 load_dotenv()
 
@@ -33,7 +32,7 @@ def process_string(prompt, user_query):
     return response.text
 
 def get_port_congestion_index():
-    port_data = search_portwatch(start_date=str(datetime.date.today() - datetime.timedelta(days=30)), end_date=str(datetime.date.today()))
+    port_data = search_portwatch(start_date=str(date.today() - timedelta(days=30)), end_date=str(date.today()))
     print("Prompting...")
     gemini = process_string("give me general global port congestion trends start your response with a value from 0 to 1 that represents the severity of the risk to any supplier overall to 2 decimal places", str(port_data))
     print(gemini[:100])
@@ -55,11 +54,11 @@ def get_payment_performance_ownership_activity(cik: str = "0000716314", symbol: 
     print(gemini[:100])
     return {"index": float(gemini[:4]), "index2": float(gemini[5:9]), "response": gemini, "data": edgar_data}
 
-def get_tarrifs_news(keywords: tuple[str]):
-    gdelt_data = data.search_gdelt(
+def get_tarrifs_news(keywords: tuple[str] = ("tarrifs", "trade war")):
+    gdelt_data = search_gdelt(
         list(keywords),
         "masa-489401",
-        "credentials.json",
+        "user/data/credentials.json",
         False,
         50,
         100,
@@ -74,10 +73,10 @@ def get_tarrifs_news(keywords: tuple[str]):
 
 
 def get_geopolitical_data(keywords: tuple[str] = ("war", "shortage", "natural disaster", "strike", "cybersecurity")):
-    gdelt_data = data.search_gdelt(
+    gdelt_data = search_gdelt(
         list(keywords),
         "masa-489401",
-        "credentials.json",
+        "user/data/credentials.json",
         False,
         10,
         250,
@@ -92,30 +91,30 @@ def get_geopolitical_data(keywords: tuple[str] = ("war", "shortage", "natural di
 
 def get_largest_enterprise_value(industry: str, marketcap_data: dict | None):
     if marketcap_data is None:
-        marketcap_data = data.search_sp500_marketcaps()
+        marketcap_data = search_sp500_marketcaps()
     print("Prompting...")
     gemini = process_string(
         f"get the marketcap of the largest company in the following industry: technology. respond as a single float in terms of billions of dollars",
         str(marketcap_data))
     return float(gemini)
 
-def mitigation_port_congestion(index: float):
-    process_string("", "Divert shipments to secondary, less congested ports such as ______. Consider shifting to air travel for critical, high-priority components with partners such as ______.")
+def mitigation_port_congestion(index: float, data):
+    return process_string(f"A severity index {index} has been calculated for port congestion. Fill out the following template given the index. Remove bracketed words but not numbers. template: Divert shipments to secondary, less congested ports such as ______. Consider shifting to air travel for critical, high-priority components with partners such as ______. data: ", data)
 
-def mitigation_credit_risk(index: float):
-    pass
+def mitigation_credit_risk(index: float, data):
+    return process_string(f"A severity index {index} has been calculated for port congestion. Fill out the following template given the index. Remove bracketed words but not numbers. template: Shorten payment terms for _____ (any one of the clients). data: ", data)
 
-def mitigation_payment_performance(index: float):
-    pass
+def mitigation_payment_performance(index: float, data):
+    return process_string(f"A severity index {index} has been calculated for port congestion. Fill out the following template given the index. Remove bracketed words but not numbers. template: Audit ______ (suppliers’) cash flow and offer financing program so that _____ (supplier) can get paid depending on credit score. data: ", data)
 
-def mitigation_ownership_activity(index: float):
-    pass
+def mitigation_ownership_activity(index: float, data):
+    return process_string(f"A severity index {index} has been calculated for port congestion. Fill out the following template given the index. Remove bracketed words but not numbers. template: Monitor for activity that could lead to monopolies in _____, and design contracts that have reduced barriers to entry/exit. data:", data)
 
-def mitigation_trade_policy(index: float):
-    pass
+def mitigation_trade_policy(index: float, data):
+    return process_string(f"A severity index {index} has been calculated for port congestion. Fill out the following template given the index. Remove bracketed words but not numbers. template: Move production to _____ which has favorable trading and production settings. data:", data)
 
-def mitigation_geopolitical_conflict(index: float):
-    pass
+def mitigation_geopolitical_conflict(index: float, data):
+    return process_string(f"A severity index {index} has been calculated for port congestion. Fill out the following template given the index. Remove bracketed words but not numbers. template: Shift the supply base to _____ or something that is not as conflicted such as the current location of _____. data:", data)
 
 # Test code
 if __name__ == "__main__":

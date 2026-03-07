@@ -52,6 +52,10 @@ class Company(models.Model):
         return "ID: " + str(self.id) + ", Uploaded: " + str(data["time"])
 
 
+class MarketCaps(models.Model):
+    data = models.JSONField(default=dict)
+    date = models.DateField()
+
 class Response(models.Model):
     response_text = models.TextField()
     company = models.OneToOneField(Company, on_delete=models.CASCADE)

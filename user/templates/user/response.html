@@ -5,6 +5,20 @@
     <title>MASA</title>
 </head>
 <body>
-<p>{{risk_assessment}}</p>
+<div class="mitigation-strategies">
+    <h3>Recommended Mitigation Strategies</h3>
+
+    {% if Analysis %}
+        <ul class="list-group">
+            {% for strategy in Analysis %}
+                <li class="list-group-item">
+                    {{ strategy|linebreaksbr }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p class="text-muted">No specific mitigation strategies identified for this risk profile.</p>
+    {% endif %}
+</div>
 </body>
 </html>
