@@ -1,8 +1,8 @@
 <div class="container mt-5">
     <div class="card shadow-sm border-0 mb-4">
         <div class="card-body bg-light">
-            <h1 class="display-5 text-primary">{{ Company_Name }}</h1>
-            <p class="lead text-muted">{{ Company_Industry }} | Risk Appetite: <strong>{{ Risk_Appetite }}</strong></p>
+            <h1 class="display-5 text-primary">Name: {{ Company_Name }}</h1>
+            <p class="lead text-muted">Industry: {{ Company_Industry }}</strong></p>
         </div>
     </div>
 
@@ -61,8 +61,14 @@
                     {% else %}
                         <p class="text-muted">No analysis available for the current selection.</p>
                     {% endif %}
+
+
                 </div>
             </div>
         </div>
+    </div>
+    <div class="analysis-text">
+    {{ result_dict.Analysis_String|linebreaks }}
+        {{Action_Plan}}
     </div>
 </div>

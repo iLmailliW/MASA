@@ -46,8 +46,8 @@ def response(request, company_id):
                                                  company_ebitda=company.company_ebitda)
     port_congestion = get_port_congestion_index()
     logistics_iot = port_congestion
-    credit_risk_scores = get_credit_risk_score()
-    payment_performance_ownership_activity = get_payment_performance_ownership_activity()
+    credit_risk_scores = get_credit_risk_score(company.symbol)
+    payment_performance_ownership_activity = get_payment_performance_ownership_activity(company.cik, company.symbol)
     payment_performance = payment_performance_ownership_activity["index"]
     ownership = payment_performance_ownership_activity["index2"]
     supplier_health = calc_supplier_health(credit_risk_scores=credit_risk_scores["index"],
@@ -82,15 +82,23 @@ def response(request, company_id):
     if "Geopolitical Conflict" in severe_risks:
         analysis.append(mitigation_geopolitical_conflict(sub_sub_risk_scores["Port Congestion Index"], str(geopolitical_conflict["data"])))
 
+    superprompt = f'Do not include any *, #, or newlines. ROLE\nYou are a Senior Supply Chain Risk Consultant and Legal Drafting Specialist. Below, you will receive a data containing company profile information and risk analysis.\n\n### INSTRUCTIONS\n1. Parse the result_dict to identify Company Name, Company Industry, and Risk_Appetite. Use these to set the professional tone.\n2. Cross-reference the Severe_Risk_Categories list against the Analysis mitigation strategies.\n3. ONLY generate formal documents for the specific categories named in Severe_Risk_Categories. If a category is not in that list, do not generate a document for it.\n\n### MITIGATION FRAMEWORK\n- Port Congestion Index -> Draft "Logistics Redirection Memo" and "Urgent Air Freight SLA".\n- Credit / Risk Scores -> Draft "Notice of Amendment to Payment Terms".\n- Payment Performance -> Draft "Supplier Audit Notification" and "Supply Chain Finance (SCF) Program Enrollment Offer".\n- Ownership Activity -> Draft "Market Competition Comp. '
 
-    result_dict = {"Company Name": company.name,
-                   "Company Industry": company.industry,
+
+
+    result_dict = {"Company_Name": company.name,
+                   "Company_Industry": company.industry,
                    "Risk_Appetite": risk_appetite,
                    "Risk_Score": risk_score,
                    "Assessment": assessment, # low-high risk
                    "Severe_Risk_Categories": severe_risks, # template name
                    "Analysis": analysis # mitigation strategies
+
                    }
+
+    s = process_string(superprompt, str(result_dict))
+
+    result_dict["Action_Plan"] = s
 
     print(result_dict)
 
