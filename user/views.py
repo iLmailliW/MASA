@@ -3,8 +3,8 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from .models import Company
 import datetime
-import algorithm
-import data.ai_process as ai
+from user import algorithm
+from user.data import ai_process as ai
 
 
 def index(request):

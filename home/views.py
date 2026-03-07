@@ -7,7 +7,10 @@ def index(request):
 
 def esg_considerations(request):
     # Any data you want to pass to the template
-    context = {
-        'message': "Welcome to the new esg page!"
-    }
+    context = {}
     return render(request, 'home/esg_considerations.html', context)
+
+def corporate_vision(request):
+    # Any data you want to pass to the template
+    context = {}
+    return render(request, 'home/corporate_vision.html', context)
