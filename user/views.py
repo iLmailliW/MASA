@@ -3,8 +3,8 @@ from django.urls import reverse
 from django.http import HttpResponseRedirect, HttpResponse
 from .models import Company
 import datetime
-import algorithm
-import data.ai_process as ai
+from user import algorithm
+from user.data import ai_process as ai
 
 
 def index(request):
@@ -31,7 +31,7 @@ def index(request):
 # This method renders the results page. It has to call any function necessary to get the result
 def response(request, company_id):
     company = get_object_or_404(Company, pk=company_id)
-    industry_max_value = ai.get_largest_enterprise_value()
+    industry_max_value = ai.get_largest_enterprise_value(company.industry)
     risk_appetite = algorithm.calc_risk_appetite(company_value=company.value,
                                                  industry_max_value=industry_max_value,
                                                  project_ebitda=company.proj_ebitda,
