@@ -1,5 +1,7 @@
 
-def calc_risk_appetite(company_value: float, industry_max_value: float, project_ebitda: float,
+def calc_risk_appetite(company_value: float,
+                       industry_max_value: float,
+                       project_ebitda: float,
                        company_ebitda: float) -> float:
     """Return the Risk Appetite of a company based on its entreprise value relative to the industry leader and the
     portion of total EBITDA represented by the project.
@@ -20,20 +22,9 @@ def calc_risk_appetite(company_value: float, industry_max_value: float, project_
     return round((size_ratio + revenue_stake) / 2, 3)
 
 
-def calc_logistics_iot(port_congestion: float, vessel_tracking: float, weather: float) -> float:
-    """Calculate the weighted risk score for Logistics and IoT data.
-    Weights: Port Congestion Index (40%), Real-Time AIS Vessel Tracking (40%), Weather / Climate Events (20%).
-
-    Preconditions:
-        - 0.0 <= port_congestion, vessel_tracking, weather <= 1.0
-
-    >>> calc_logistics_iot(0.8, 0.5, 0.2) # (0.32 + 0.2 + 0.04)
-    0.56
-    """
-    return (0.4 * port_congestion) + (0.4 * vessel_tracking) + (0.2 * weather)
-
-
-def calc_supplier_health(credit_risk_scores: float, payment_performance: float, ownership: float) -> float:
+def calc_supplier_health(credit_risk_scores: float,
+                         payment_performance: float,
+                         ownership: float) -> float:
     """Calculate the weighted risk score for Supplier Health.
     Weights: Credit / Risk Scores (50%), Payment Performance (30%), Ownership Activity (20%).
 
@@ -46,98 +37,34 @@ def calc_supplier_health(credit_risk_scores: float, payment_performance: float, 
     return (0.5 * credit_risk_scores) + (0.3 * payment_performance) + (0.2 * ownership)
 
 
-def calc_news_geopolitics(trade_policy: float, geopolitical_conflict: float, commodity_volatility: float) -> float:
+def calc_news_geopolitics(trade_policy: float,
+                          geopolitical_conflict: float) -> float:
     """Calculate the weighted risk score for News and Geopolitical Feeds.
-    Weights: Trade Policy & Tariffs (50%), Geopolitical Conflict (30%), Commodity Price Volaitility (20%).
+    Weights: Trade Policy & Tariffs (60%), Geopolitical Conflict (40%).
 
     Preconditions:
-        - 0.0 <= trade_policy, geopolitical_conflict, commodity_volatility <= 1.0
-
-    >>> calc_news_geopolitics(0.7, 0.8, 0.4) # (0.35 + 0.24 + 0.08)
-    0.67
+        - 0.0 <= trade_policy, geopolitical_conflict <= 1.0
     """
-    return (0.5 * trade_policy) + (0.3 * geopolitical_conflict) + (0.2 * commodity_volatility)
+    return (0.6 * trade_policy) + (0.4 * geopolitical_conflict)
 
 
-def calc_inventory(on_hand: float, safety_stock: float, reorder_points: float) -> float:
-    """Calculate the weighted risk score for Inventory.
-    Weights: On-Hand Inventory (50%), Safety Stock Levels (30%), Reorder Points (20%).
-
-    Preconditions:
-        - 0.0 <= on_hand, safety, reorder <= 1.0
-
-    >>> calc_inventory(0.2, 0.4, 0.9) # (0.1 + 0.12 + 0.18)
-    0.4
-    """
-    return (0.5 * on_hand) + (0.3 * safety_stock) + (0.2 * reorder_points)
-
-
-def calc_production(order_backlog: float, production_schedule: float) -> float:
-    """Calculate the weighted risk score for Production & Demand.
-    Weights: Order Backlog (60%), Production Schedule (40%).
-
-    Preconditions:
-        - 0.0 <= backlog, schedule <= 1.0
-
-    >>> calc_production(0.8, 0.3) # (0.48 + 0.12)
-    0.6
-    """
-    return (0.6 * order_backlog) + (0.4 * production_schedule)
-
-
-def calc_procurement(supplier_concentration: float, lead_time_sensitivity: float) -> float:
-    """Calculate the weighted risk score for Supplier & Procurement risk.
-    Weights: Supplier Concentration (60%), Lead-time Sensitivity (40%).
-
-    Preconditions:
-        - 0.0 <= concentration, lead_time <= 1.0
-
-    >>> calc_procurement(0.9, 0.5) # (0.54 + 0.2)
-    0.74
-    """
-    return (0.6 * supplier_concentration) + (0.4 * lead_time_sensitivity)
-
-
-def calc_external(logistics_iot: float, supplier_health: float, news_geopolitics: float) -> float:
-    """Calculate the total External Risk score by weighting three global signal categories.
+def calc_risk_score(logistics_iot: float,
+                    supplier_health: float,
+                    news_geopolitics: float) -> float:
+    """Calculate the final aggregate Risk Score by weighting three global signal categories.
     Weights: Logistics/IoT (50%), Supplier Health (30%), News/Geopolitics (20%).
 
     Preconditions:
         - 0.0 <= logistics_iot, supplier_health, news_geopolitics <= 1.0
 
-    >>> calc_external(0.8, 0.4, 0.5) # (0.4 + 0.12 + 0.1)
+    >>> calc_risk_score(0.8, 0.4, 0.5) # (0.4 + 0.12 + 0.1)
     0.62
     """
     return (0.5 * logistics_iot) + (0.3 * supplier_health) + (0.2 * news_geopolitics)
 
 
-def calc_internal(inventory: float, production: float, procurement: float) -> float:
-    """Calculate the total Internal Risk score by weighting operational data categories.
-    Weights: Inventory (30%), Production (45%), Procurement (25%).
-
-    Preconditions:
-        - 0.0 <= inventory, production, procurement <= 1.0
-
-    >>> calc_internal(0.2, 0.6, 0.8) # (0.06 + 0.27 + 0.2)
-    0.53
-    """
-    return (0.3 * inventory) + (0.45 * production) + (0.25 * procurement)
-
-
-def calc_risk_score(external: float, internal: float) -> float:
-    """Calculate the final aggregate Risk Score by balancing external and internal inputs.
-    Weights: External Data (50%) and Internal Data (50%).
-
-    Preconditions:
-        - 0.0 <= external, internal <= 1.0
-
-    >>> calc_risk_score(0.62, 0.53) # (0.31 + 0.265)
-    0.575
-    """
-    return round((0.5 * external) + (0.5 * internal), 3)
-
-
-def risk_score_assessment(risk_score: float, risk_appetite: float) -> str:
+def risk_score_assessment(risk_score: float,
+                          risk_appetite: float) -> str:
     """ Return the interpretation of the risk score dependent on the company's risk appetite. The interpretation is
     out of these three options: ["High Risk", "Moderate - High Risk", "Moderate Risk", "Moderate - Low Risk", "Low
     Risk", "Minimal Risk"]
@@ -178,19 +105,23 @@ def risk_score_assessment(risk_score: float, risk_appetite: float) -> str:
             return "Minimal Risk"
 
 
-def generate_all_sub_sub_risk_scores(logistics_iot: float, supplier_health: float, news_geopolitics: float,
-                                     inventory: float, production: float, procurement: float) -> dict[str, float]:
+def generate_all_sub_sub_risk_scores(port_congestion: float,
+                                     credit_risk_scores: float,
+                                     payment_performance: float,
+                                     ownership: float,
+                                     trade_policy: float,
+                                     geopolitical_conflict: float) -> dict[str, float]:
     """ Return a dictionary mapping each supply chain criteria to its calculated risk severity score.
 
     Preconditions:
         - 0.0 <= logistics_iot, supplier_health, news_geopolitics, inventory, production, procurement <= 1.0
     """
-    return {"Logistics/IOT": logistics_iot,
-            "Supplier Health": supplier_health,
-            "News/Geopolitics": news_geopolitics,
-            "Inventory": inventory,
-            "Production": production,
-            "Procurement": procurement}
+    return {"Port Congestion Index": port_congestion,
+            "Credit / Risk Scores": credit_risk_scores,
+            "Payment Performance": payment_performance,
+            "Ownership Activity": ownership,
+            "Trade Policy & Tariffs": trade_policy,
+            "Geopolitical Conflict": geopolitical_conflict}
 
 
 def identify_severe_risks(scores: dict[str, float]) -> list[str]:

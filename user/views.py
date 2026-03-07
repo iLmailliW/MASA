@@ -19,14 +19,7 @@ def index(request):
             company_ebitda=request.POST.get("company_EBITDA"),
             value=request.POST.get("value"),
             risk=request.POST.get("risk"),
-            time=datetime.datetime.now(),
-            on_hand=request.POST.get("on_hand"),
-            safety_stock=request.POST.get("safety_stock"),
-            reoder_points=request.POST.get("reoder_points"),  # Matches your model typo
-            order_backlog=request.POST.get("order_backlog"),
-            production_schedule=request.POST.get("production_schedule"),
-            supplier_concentration=request.POST.get("supplier_concentration"),
-            lead_time_sensitivity=request.POST.get("lead_time_sensitivity")
+            time=datetime.datetime.now()
         )
         # save data here if needed
         return HttpResponseRedirect(reverse('user:response', args=(new_company.id,)))
@@ -43,11 +36,7 @@ def response(request, company_id):
                                                  project_ebitda=company.proj_ebitda,
                                                  company_ebitda=company.company_ebitda)
     port_congestion = 0.0  # TODO: WL
-    vessel_tracking = 0.0  # TODO: WL
-    weather = 0.0  # TODO: WL
-    logistics_iot = algorithm.calc_logistics_iot(port_congestion=port_congestion,
-                                                 vessel_tracking=vessel_tracking,
-                                                 weather=weather)
+    logistics_iot = port_congestion
     credit_risk_scores = 0.0  # TODO: WL
     payment_performance = 0.0  # TODO: WL
     ownership = 0.0  # TODO: WL
@@ -60,43 +49,18 @@ def response(request, company_id):
     news_geopolitics = algorithm.calc_news_geopolitics(trade_policy=trade_policy,
                                                        geopolitical_conflict=geopolitical_conflict,
                                                        commodity_volatility=commodity_volatility)
-    on_hand = company.on_hand / 100
-    safety_stock = company.safety_stock / 100
-    reorder_points = company.reorder_points / 100
-    inventory = algorithm.calc_inventory(on_hand=on_hand,
-                                         safety_stock=safety_stock,
-                                         reorder_points=reorder_points)
-    order_backlog = company.order_backlog / 100
-    production_schedule = company.production_schedule / 100
-    production = algorithm.calc_production(order_backlog=order_backlog,
-                                           production_schedule=production_schedule)
-    supplier_concentration = company.supplier_concentration / 100
-    lead_time_sensitivity = company.lead_time_sensitivity / 100
-    procurement = algorithm.calc_procurement(supplier_concentration=supplier_concentration,
-                                             lead_time_sensitivity=lead_time_sensitivity)
-    external = algorithm.calc_external(logistics_iot=logistics_iot,
-                                       supplier_health=supplier_health,
-                                       news_geopolitics=news_geopolitics)
-    internal = algorithm.calc_internal(inventory=inventory,
-                                       production=production,
-                                       procurement=procurement)
-    risk_score = algorithm.calc_risk_score(external=external,
-                                           internal=internal)
+    risk_score = algorithm.calc_risk_score(logistics_iot=logistics_iot,
+                                           supplier_health=supplier_health,
+                                           news_geopolitics=news_geopolitics)
     assessment = algorithm.risk_score_assessment(risk_score, risk_appetite)
     sub_sub_risk_scores = algorithm.generate_all_sub_sub_risk_scores(logistics_iot=logistics_iot,
                                                                      supplier_health=supplier_health,
-                                                                     news_geopolitics=news_geopolitics,
-                                                                     inventory=inventory,
-                                                                     production=production,
-                                                                     procurement=procurement)
+                                                                     news_geopolitics=news_geopolitics)
     severe_risks = algorithm.identify_severe_risks(sub_sub_risk_scores)
     analysis = ""
     result_dict = {"Company Name": company.name,
                    "Company Industry": company.industry,
-                   "Company"
                    "Risk Appetite": risk_appetite,
-                   "External Score": external,
-                   "Internal Score": internal,
                    "Risk Score": risk_score,
                    "Assessment": assessment,
                    "Severe Risk Categories": severe_risks,
