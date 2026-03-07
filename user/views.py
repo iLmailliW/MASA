@@ -36,7 +36,7 @@ def response(request, company_id):
                                                  industry_max_value=industry_max_value,
                                                  project_ebitda=company.proj_ebitda,
                                                  company_ebitda=company.company_ebitda)
-    port_congestion = ai.get_port_progression_index()
+    port_congestion = ai.get_port_congestion_index()
     logistics_iot = port_congestion
     credit_risk_scores = ai.get_credit_risk_score()
     payment_performance_ownership_activity = ai.get_payment_performance_ownership_activity()
