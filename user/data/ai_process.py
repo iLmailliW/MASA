@@ -28,6 +28,23 @@ def process_string(prompt, user_query):
 
     return response.text
 
+def get_port_progression_index():
+    pass
+
+def get_credit_risk_score(symbol: str):
+    pass
+
+def get_payment_performance_ownership_activity(cik: str, symbol: str):
+    pass
+
+def get_tarrifs_news(keywords: tuple[str]):
+    pass
+
+def get_geopolitical_data(keywords: tuple[str]):
+    pass
+
+def get_largest_enterprise_value(industry: str):
+    pass
 
 # Test code
 if __name__ == "__main__":
